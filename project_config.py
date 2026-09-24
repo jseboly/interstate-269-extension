@@ -8,6 +8,7 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 CORRIDOR_CONFIG = [
     {
         "name": "North Option",
+        "source_type": "FileGDBFeatureClass",
         "description": ("northern route option connecting Millington with I-55 "
                         "at Turrell, Arkansas"),
         "source_path": os.path.join(PROJECT_ROOT, "ProposedRoutes.gdb", 
@@ -15,6 +16,7 @@ CORRIDOR_CONFIG = [
     },
     {
         "name": "South Option",
+        "source_type": "FileGDBFeatureClass",
         "description": ("southern route option connecting Millington with I-40 "
                         "at West Memphis, Arkansas"),
         "source_path": os.path.join(PROJECT_ROOT, "ProposedRoutes.gdb", 
