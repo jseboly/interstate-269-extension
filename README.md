@@ -19,16 +19,14 @@ at the I-55 and I-40 interchange.
 The project configuration is managed entirely within project_config.py. All paths, data sources, and analysis parameters are defined as Python data structures. 
 ### Corridors (CORRIDOR_CONFIG)
 Defines the alternative routes being analyzed. One or more entries are required. Each entry in the list requires:
-
-name: Display name for the corridor option.
-
-description: Summary of the route alignment.
-
-source_path: Local file path or Geodatabase feature class path (uses os.path.join(PROJECT_ROOT, ...) for portability).
+* name: Display name for the corridor option.
+* description: Summary of the route alignment.
+* source_path: Local file path or Geodatabase feature class path (uses os.path.join(PROJECT_ROOT, ...) for portability).
 
 ### Analysis data sources
-Data sources can be local vector datasets or remote REST Feature Services. Each entry is structured as a dictionary containing:
+PARCEL_SOURCES, ROADS_SOURCES, RAILROADS_SOURCES, ENVIRONMENTAL_SOURCES, STRUCTURES_SOURCES
 
+Data sources can be local vector datasets or remote REST Feature Services. Each entry is structured as a dictionary containing:
 * name: Label for the layer.
 * source_type: Data type indicator 
   * valid values: "Shapefile", "FileGDBFeatureClass", "Geopackage", "FeatureService"
