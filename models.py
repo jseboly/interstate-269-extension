@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
+from io import BytesIO
 from typing import Optional
 import pandas as pd
 import geopandas as gpd
@@ -14,10 +15,10 @@ class GISFileType(str, Enum):
 @dataclass
 class GISLayer:
     name: str
-    description: str = ""
     source_path: str
-    source_type = GISFileType
-    spatial_reference: int = 4326
+    source_type: GISFileType
+    epsg_code: int = 4326
+    description: str = ""
     
     # Internal attribute holding the GeoDataFrame, hidden from initial creation
     _gdf: Optional[gpd.GeoDataFrame] = field(default=None, repr=False, init=False)
@@ -36,17 +37,30 @@ class GISLayer:
                 self._gdf = gpd.read_file(self.source_path)
         return self._gdf
 
-    def _load_from_feature_service(self, url, bbox=None) -> gpd.GeoDataFrame:
+    def _load_from_feature_service(
+        self, url: str, bbox=None, timeout: float = 30
+    ) -> gpd.GeoDataFrame:
         """Handles REST / Web Feature Service loads with server-side spatial filtering."""
         
         # Method A: Standard GeoPandas read using GDAL/Fiona driver
         try:
             return gpd.read_file(url, bbox=bbox)
-        except Exception as err:
+        except Exception as read_error:
             # Method B: Fallback using Esri JSON / ArcGIS REST query params
-            return self._fetch_arcgis_rest_query(url, bbox=bbox)
+            try:
+                return self._fetch_arcgis_rest_query(
+                    url, bbox=bbox, timeout=timeout
+                )
+            except Exception as fallback_error:
+                raise RuntimeError(
+                    f"Could not load feature service {url!r}. "
+                    f"GeoPandas error: {read_error}; "
+                    f"REST fallback error: {fallback_error}"
+                ) from fallback_error
 
-    def _fetch_arcgis_rest_query(self, url, bbox = None) -> gpd.GeoDataFrame:
+    def _fetch_arcgis_rest_query(
+        self, url: str, bbox=None, timeout: float = 30
+    ) -> gpd.GeoDataFrame:
         """
         Manual fallback for ArcGIS REST Feature Layer /query endpoints.
         Constructs a REST query with spatial envelope filtering.
@@ -70,9 +84,9 @@ class GISLayer:
                 "inSR": self.epsg_code
             })
 
-        response = requests.get(query_url, params=params)
+        response = requests.get(query_url, params=params, timeout=timeout)
         response.raise_for_status()
-        return gpd.read_file(response.text)
+        return gpd.read_file(BytesIO(response.content))
 
     def unload(self) -> None:
         """Explicitly clear RAM if the data is no longer needed."""
@@ -81,8 +95,7 @@ class GISLayer:
 
 @dataclass
 class ProjectRoute:
-    name: str
-    description: str = ""
+    name: str    
     centerline: GISLayer
     corridor: GISLayer = None
     total_length: float = None
@@ -91,3 +104,4 @@ class ProjectRoute:
     permits: dict = None
     env_constraints: dict = None
     structures: dict = None
+    description: str = ""
