@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
 from enum import Enum
 from io import BytesIO
+import os
 from typing import Optional
 import pandas as pd
 import geopandas as gpd
@@ -10,7 +11,6 @@ class GISFileType(str, Enum):
     GDB_FEATURE_CLASS = "file_gdb_feature_class"
     GPKG_FEATURE_CLASS = "geopackage_feature_class"
     FEATURE_SERVICE = "feature_service"
-    MAP_SERVICE = "map_service"
 
 @dataclass
 class GISLayer:
@@ -33,8 +33,11 @@ class GISLayer:
             print(f"Reading {self.name} geometry into geodataframe...")
             if self.source_type == GISFileType.FEATURE_SERVICE:
                 self._gdf = self._load_from_feature_service(self.source_path)
+            elif self.source_type == GISFileType.SHAPEFILE:
+                self._gdf = gpd.read_file(self.source_path).to_crs(self.epsg_code)
             else:
-                self._gdf = gpd.read_file(self.source_path)
+                gdb_path, fc_name = os.path.split(self.source_path)
+                self._gdf = gpd.read_file(gdb_path, layer=fc_name).to_crs(self.epsg_code)
         return self._gdf
 
     def _load_from_feature_service(
