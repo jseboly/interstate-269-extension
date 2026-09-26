@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+RESULTS_FILE = os.path.join(PROJECT_ROOT, "analysis_results.md")
 
 # corridors to analyze
 CORRIDOR_CONFIG = [

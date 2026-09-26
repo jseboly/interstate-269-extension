@@ -44,3 +44,13 @@ To adjust the analysis for new routes, updated parameters, or different layers:
 * Add a Route Option: Append a new dictionary entry to the CORRIDOR_CONFIG list specifying its path within ProposedRoutes.gdb.
 * Swap Data Layers: Update source_path URLs or local paths under the appropriate source list (ENVIRONMENTAL_SOURCES, PARCEL_SOURCES, etc.).
 
+## Execution
+When all configuration settings are ready, run "Orchestrator.py" to perform the analysis. The results of the analysis will be written to the file specified as RESULTS_FILE in the config file. 
+
+## Provided Results
+Here is a description of the results that this tool can calculate for you.
+### Parcel Analysis
+### Crossing Analysis
+### Environmental Analysis
+### Structure Analysis
+
