@@ -41,7 +41,7 @@ Global spatial and analysis parameters applied across the pipeline:
 ### Customizing Configuration
 To adjust the analysis for new routes, updated parameters, or different layers:
 * Change ROW Width: Modify ROW_WIDTH_FEET = <new_distance> to expand or contract the buffer zones.
-* Add a Route Option: Append a new dictionary entry to the CORRIDOR_CONFIG list specifying its path within ProposedRoutes.gdb.
+* Add a Route Option: Append a GisLayer object to the CORRIDOR_CONFIG. 
 * Swap Data Layers: Update source_path URLs or local paths under the appropriate source list (ENVIRONMENTAL_SOURCES, PARCEL_SOURCES, etc.).
 
 ## Execution

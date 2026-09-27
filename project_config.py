@@ -12,7 +12,7 @@ PROJECT_BBOX = (699751.991850, 328985.445673, 804671.224006, 415248.428825)
 ROW_WIDTH_FEET = 150
 
 # corridors to analyze
-CORRIDOR_CONFIG = [
+ROUTES_CONFIG = [
     models.ProjectRoute(
         name="North Option",
         centerline=models.GISLayer(

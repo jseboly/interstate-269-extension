@@ -26,11 +26,10 @@ class GISLayer:
     parcel_id_field: Optional[str] = None
     bbox: Optional[tuple] = None
 
-    @property
     def load_data(self) -> gpd.GeoDataFrame:
         """
         Lazy-loads and caches the GeoDataFrame.
-        Reads from disk ONLY on the first call to layer.load_data.
+        Reads from disk only on the first call to layer.load_data().
         """
         if self._gdf is None:
             print(f"Reading {self.name} geometry into geodataframe...")
