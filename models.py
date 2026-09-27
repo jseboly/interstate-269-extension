@@ -22,6 +22,9 @@ class GISLayer:
     
     # Internal attribute holding the GeoDataFrame, hidden from initial creation
     _gdf: Optional[gpd.GeoDataFrame] = field(default=None, repr=False, init=False)
+    owner_field: Optional[str] = None
+    parcel_id_field: Optional[str] = None
+    bbox: Optional[tuple] = None
 
     @property
     def load_data(self) -> gpd.GeoDataFrame:
@@ -32,7 +35,7 @@ class GISLayer:
         if self._gdf is None:
             print(f"Reading {self.name} geometry into geodataframe...")
             if self.source_type == GISFileType.FEATURE_SERVICE:
-                self._gdf = self._load_from_feature_service(self.source_path)
+                self._gdf = self._load_from_feature_service(self.source_path, bbox=self.bbox)
             elif self.source_type == GISFileType.SHAPEFILE:
                 self._gdf = gpd.read_file(self.source_path).to_crs(self.epsg_code)
             else:
