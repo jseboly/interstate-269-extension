@@ -96,6 +96,42 @@ def get_entry_distance(poly_geom, line_geom):
 
     return line_geom.project(point)
 
+def get_entry_distances(poly_geom, line_geom):
+    """Return the min and max distances along the line within the polygon."""
+    from shapely.geometry import Point
+
+    intersection = poly_geom.intersection(line_geom)
+    if intersection.is_empty:
+        return None, None
+
+    def project_parts(geom):
+        if geom.is_empty:
+            return []
+
+        if geom.geom_type == "Point":
+            return [line_geom.project(geom)]
+
+        if geom.geom_type in {"LineString", "LinearRing"}:
+            return [
+                line_geom.project(Point(coord))
+                for coord in geom.coords
+            ]
+
+        if hasattr(geom, "geoms"):
+            return [
+                distance
+                for part in geom.geoms
+                for distance in project_parts(part)
+            ]
+
+        return []
+
+    distances = project_parts(intersection)
+    if not distances:
+        return None, None
+
+    return min(distances), max(distances)
+
 def generate_line_list(route, parcels):
     print(f"Generating line list for route: {route.name}")
     route.centerline.load_data()
@@ -108,15 +144,18 @@ def generate_line_list(route, parcels):
         predicate='intersects'
     ).copy()
 
-    intersecting_polygons['entry_distance'] = intersecting_polygons.geometry.apply(
-        lambda poly: get_entry_distance(poly, centerline_gdf.geometry.iloc[0])
+    distances = intersecting_polygons.geometry.apply(
+        lambda poly: get_entry_distances(poly, centerline_gdf.geometry.iloc[0])
+    )
+
+    intersecting_polygons[["entry_distance", "exit_distance"]] = pd.DataFrame(
+        distances.tolist(), index=intersecting_polygons.index
     )
 
     sorted_polygons = intersecting_polygons.sort_values(by='entry_distance').reset_index(drop=True)
-    print(sorted_polygons)
+    route.line_list = sorted_polygons
     route.centerline.unload()
     del centerline_gdf
-    return sorted_polygons
 
 def main():
     print("Analyzing parcels...")
@@ -125,5 +164,6 @@ def main():
     for route in cfg.ROUTES_CONFIG:
         print(f"Analyzing parcels for route: {route.name}")
         line_list = generate_line_list(route, parcels)
+        print(f"Generated line list for route: {route.name}")
 
     print("Parcel analysis complete.")
