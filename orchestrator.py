@@ -4,7 +4,7 @@ from parcel_analysis import main as analyze_parcels
 import generate_corridors
 
 def main():
-    generate_corridors()
+    generate_corridors.generate_corridors()
 
 if __name__ == "__main__":
     main()
