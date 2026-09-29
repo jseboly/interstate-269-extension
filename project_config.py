@@ -7,8 +7,6 @@ PROJECT_ROOT = Path(__file__).resolve().parent
 RESULTS_FILE = os.path.join(PROJECT_ROOT, "analysis_results.md")
 PROJECT_CRS = 2274
 PROJECT_BBOX = (699751.991850, 328985.445673, 804671.224006, 415248.428825)
-# hint: use https://vibhorsingh.com/boundingbox to calculate the bounding box 
-# for the project area
 ROW_WIDTH_FEET = 150
 
 # corridors to analyze
