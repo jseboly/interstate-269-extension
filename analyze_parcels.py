@@ -153,6 +153,7 @@ def generate_line_list(route, parcels):
     )
 
     sorted_polygons = intersecting_polygons.sort_values(by='entry_distance').reset_index(drop=True)
+    sorted_polygons["feet_crossed"] = sorted_polygons["exit_distance"] - sorted_polygons["entry_distance"]
     route.line_list = sorted_polygons
     route.centerline.unload()
     del centerline_gdf
@@ -163,7 +164,7 @@ def main():
 
     for route in cfg.ROUTES_CONFIG:
         print(f"Analyzing parcels for route: {route.name}")
-        line_list = generate_line_list(route, parcels)
+        generate_line_list(route, parcels)
         print(f"Generated line list for route: {route.name}")
 
     print("Parcel analysis complete.")
