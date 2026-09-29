@@ -35,7 +35,7 @@ def generate_corridor(route):
         centerline_layer.unload()
         del buffered_gdf
 
-def generate_corridors():
+def main():
     for route in cfg.ROUTES_CONFIG:
         # generate corridor for each route
         generate_corridor(route)
