@@ -68,7 +68,8 @@ class GISLayer:
     ) -> gpd.GeoDataFrame:
         """
         Manual fallback for ArcGIS REST Feature Layer /query endpoints.
-        Constructs a REST query with spatial envelope filtering.
+        Constructs a REST query with spatial envelope filtering and parses the
+        GeoJSON response directly.
         """
         import requests
 
@@ -91,7 +92,24 @@ class GISLayer:
 
         response = requests.get(query_url, params=params, timeout=timeout)
         response.raise_for_status()
-        return gpd.read_file(BytesIO(response.content))
+
+        payload = response.json()
+        if not isinstance(payload, dict) or "features" not in payload:
+            raise ValueError(
+                f"ArcGIS query returned an unexpected payload for {url!r}: "
+                f"{payload[:200] if isinstance(payload, str) else payload}"
+            )
+
+        crs = self.epsg_code
+        if isinstance(payload.get("crs"), dict):
+            crs_name = payload["crs"].get("properties", {}).get("name")
+            if isinstance(crs_name, str) and crs_name.upper().startswith("EPSG:"):
+                try:
+                    crs = int(crs_name.split(":", 1)[1])
+                except ValueError:
+                    pass
+
+        return gpd.GeoDataFrame.from_features(payload["features"], crs=crs)
 
     def unload(self) -> None:
         """Explicitly clear RAM if the data is no longer needed."""

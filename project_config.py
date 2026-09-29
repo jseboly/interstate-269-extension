@@ -54,8 +54,8 @@ PARCEL_SOURCES = [
         source_path="https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Planning_Cadastre/FeatureServer/6",
         epsg_code=PROJECT_CRS,
         bbox=PROJECT_BBOX,
-        owner_field="OWNER",
-        parcel_id_field="PARCELID"
+        owner_field="ownername",
+        parcel_id_field="parcelid"
     )
 ]
 

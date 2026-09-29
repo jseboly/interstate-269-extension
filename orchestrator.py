@@ -1,5 +1,5 @@
 from generate_corridors import main as generate_corridors
-from parcel_analysis import main as analyze_parcels
+from analyze_parcels import main as analyze_parcels
 
 def main():
     generate_corridors()
