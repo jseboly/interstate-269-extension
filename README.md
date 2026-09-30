@@ -58,6 +58,20 @@ When all configuration settings are ready, run "Orchestrator.py" to perform the 
 ## Provided Results
 Here is a description of the results that this tool can calculate for you.
 ### Parcel Analysis
+Owner classification is optional. To enable it, install the OpenAI SDK with
+`python -m pip install openai` and set `OPENAI_API_KEY` in the environment
+before running the analysis. `OWNER_CLASSIFICATION_MODEL` can override the
+default model (`gpt-4o-mini`). Without an API key, rows receive
+cached classifications when available; uncached rows receive
+`OwnerType="not_classified"` and a null `OwnerTypeConfidence`.
+
+When enabled, unique owner names are sent to OpenAI in batches. Results are
+stored in `OwnerType` and `OwnerTypeConfidence` columns and cached locally in
+`owner_classification_cache.json` for reuse across routes and later runs. The
+cache may contain personal owner names. Review your data-handling requirements
+before enabling external classification. Confidence is the model's estimate,
+not a calibrated probability; ambiguous names are classified as `unknown`.
+
 ### Crossing Analysis
 ### Environmental Analysis
 ### Structure Analysis
