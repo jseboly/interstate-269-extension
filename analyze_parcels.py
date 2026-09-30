@@ -154,6 +154,7 @@ def classify_owner_types(gdf, client, cache):
         if not content:
             raise ValueError("The owner classification model returned no content.")
         result = json.loads(content)
+        print(f"Received classifications: {result}")
         requested_keys = set(batch_keys)
         for classification in result.get("classifications", []):
             owner_key = str(classification.get("owner", "")).strip().casefold()
@@ -322,7 +323,6 @@ def generate_line_list(route, parcels, owner_client=None, owner_classification_c
         sorted_polygons, owner_client, owner_classification_cache
     )
     route.line_list = sorted_polygons
-    print(sorted_polygons)
     route.corridor.unload()
 
 def main():
