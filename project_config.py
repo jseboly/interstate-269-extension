@@ -45,8 +45,8 @@ PARCEL_SOURCES = [
         source_type=models.GISFileType.SHAPEFILE,
         source_path=os.path.join(PROJECT_ROOT, "ShelbyCountyParcels.shp"),
         epsg_code=PROJECT_CRS,
-        owner_field="OWNER",
-        parcel_id_field="PARCELID"
+        name_field="OWNER",
+        id_field="PARCELID"
     ),
     models.GISLayer(
         name="Arkansas Parcels",
@@ -54,8 +54,8 @@ PARCEL_SOURCES = [
         source_path="https://gis.arkansas.gov/arcgis/rest/services/FEATURESERVICES/Planning_Cadastre/FeatureServer/6",
         epsg_code=PROJECT_CRS,
         bbox=PROJECT_BBOX,
-        owner_field="ownername",
-        parcel_id_field="parcelid"
+        name_field="ownername",
+        id_field="parcelid"
     )
 ]
 
@@ -65,35 +65,40 @@ PERMIT_SOURCES = [
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/3",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Interstate Highway'
     ),
     models.GISLayer(
         name="US Highways",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/4",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'US Highway'
     ),
     models.GISLayer(
         name="State Highways",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/5",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'State Highway'
     ),
     models.GISLayer(
         name="Local Roads",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/7",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'LocalRoad'
     ),
     models.GISLayer(
             name="Railroads",
             source_type=models.GISFileType.FEATURE_SERVICE,
             source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/6",
             bbox=PROJECT_BBOX,
-            epsg_code=PROJECT_CRS
+            epsg_code=PROJECT_CRS,
+            description = 'Railroad'
         )
 ]
 
@@ -103,35 +108,40 @@ ENVIRONMENTAL_SOURCES = [
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/USA_Wetlands/FeatureServer/0",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Wetland'
     ),
     models.GISLayer(
         name="Water Bodies",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Hydrography_Dataset_Plus_Medium_Resolution/FeatureServer/1",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Waterbody'
     ),
     models.GISLayer(
         name="Streams",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Hydrography_Dataset_Plus_Medium_Resolution/FeatureServer/2",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description='Stream'
     ),
     models.GISLayer(
         name="Flood Zones",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Flood_Hazard_Layer/FeatureServer/0",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Flood Zone'
     ),
     models.GISLayer(
         name="Protected Areas",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/PADUS_Protection_Status_by_GAP_Status_Code/FeatureServer/0",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Protected Area'
     )
 ]
 
@@ -141,7 +151,8 @@ STRUCTURES_SOURCES = [
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/USA_Structures_View/FeatureServer/0",
         bbox=PROJECT_BBOX,
-        epsg_code=PROJECT_CRS
+        epsg_code=PROJECT_CRS,
+        description = 'Structure'
     )
 ]
 
