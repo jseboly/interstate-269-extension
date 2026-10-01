@@ -198,14 +198,14 @@ def merge_parcel_data():
             matches = [col for col in gdf.columns if str(col).lower() == str(field_name).lower()]
             return matches[0] if matches else None
 
-        owner_key = resolve_field(source.owner_field)
-        parcel_key = resolve_field(source.parcel_id_field)
+        owner_key = resolve_field(source.name_field)
+        parcel_key = resolve_field(source.id_field)
 
         if owner_key is None or parcel_key is None:
             available = list(gdf.columns)
             raise KeyError(
                 f"Could not find required parcel fields for {source.name}. "
-                f"Expected owner='{source.owner_field}', parcel_id='{source.parcel_id_field}'. "
+                f"Expected owner='{source.name_field}', parcel_id='{source.id_field}'. "
                 f"Available columns: {available}"
             )
 

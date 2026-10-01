@@ -22,8 +22,9 @@ class GISLayer:
     
     # Internal attribute holding the GeoDataFrame, hidden from initial creation
     _gdf: Optional[gpd.GeoDataFrame] = field(default=None, repr=False, init=False)
-    owner_field: Optional[str] = None
-    parcel_id_field: Optional[str] = None
+    name_field: Optional[str] = None
+    id_field: Optional[str] = None
+    type_field: Optional[str] = None
     bbox: Optional[tuple] = None
 
     def load_data(self) -> gpd.GeoDataFrame:

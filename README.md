@@ -36,10 +36,10 @@ In the context of this project, a GISLayer is an object that holds references to
 * source_path: The path of the GIS data file to be associated with this layer.
 * source_type: SHAPEFILE, GDB_FEATURE_CLASS, GPKG_FEATURE_CLASS, FEATURE_SERVICE
 * epsg_code: The desired spatial reference of the data. If the referenced GIS file/service is in a different spatial reference, the data will be projected into the one specified here before any analysis is done.
-* description (optional)
-* owner_field (optional, used for parcel datasets)
-* parcel_id_field (optional, used for parcel datasets)
-* bbox (optional, bounding box coordinates)
+* description (optional): This should be used to indicate which type of feature is being represented in this layer (e.g. Road, Railroad, Stream, etc.). Whatever is passed to this attribute will appear in the results document as the descriptor for any impacts arising from that layer.
+* name_field (optional): For parcel datasets, this should be set to the field containing the landowner names. For others, you may set it to the field that contains names if you want to see those names reflected in the results document.
+* id_field (optional): For parcel datasets, this should be set to the field containing the parcel id. For others, it may be set to any field that contains an identifying number/string.
+* bbox (optional): bounding box coordinates
 
 ### Analysis data sources
 PARCEL_SOURCES, PERMIT_SOURCES, ENVIRONMENTAL_SOURCES, STRUCTURES_SOURCES
