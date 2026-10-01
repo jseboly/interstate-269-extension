@@ -65,7 +65,7 @@ class GISLayer:
                 ) from fallback_error
 
     def _fetch_arcgis_rest_query(
-        self, url: str, bbox=None, timeout: float = 30
+        self, url: str, bbox=None, timeout: float = 600
     ) -> gpd.GeoDataFrame:
         """
         Manual fallback for ArcGIS REST Feature Layer /query endpoints.
@@ -121,11 +121,11 @@ class GISLayer:
 class ProjectRoute:
     name: str    
     centerline: GISLayer
-    corridor: GISLayer = None
-    total_length: float = None
-    total_area: float = None
-    line_list: pd.DataFrame = None
-    permits: dict = None
-    env_constraints: dict = None
-    structures: dict = None
-    description: str = ""
+    corridor: GISLayer = field(default=None)
+    total_length: float = field(default=None)
+    total_area: float = field(default=None)
+    line_list: pd.DataFrame = field(default=None)
+    permits: dict = field(default_factory=dict)
+    env_constraints: dict = field(default_factory=dict)
+    structures: dict = field(default_factory=dict)
+    description: str = field(default="")

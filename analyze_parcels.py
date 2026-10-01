@@ -3,6 +3,7 @@ import os
 import pandas as pd
 import geopandas as gpd
 import project_config as cfg
+import utils
 
 OWNER_TYPES = [
     "private_individual",
@@ -232,16 +233,6 @@ def merge_parcel_data():
 
     return merged_gdf
 
-def clean_line_features(line_gdf):
-    """Ensures that the route is represented as a single-line GeoDataFrame."""
-    print("Cleaning line features...")
-    clean_lines = line_gdf[~line_gdf.is_empty & line_gdf.geometry.notnull()].copy()
-    clean_lines = clean_lines[clean_lines.geometry.type.isin(["LineString", "MultiLineString"]) ]
-    single_lines = clean_lines.explode(index_parts=False)
-    target_line = single_lines.unary_union
-
-    return gpd.GeoDataFrame(geometry=[target_line], crs=clean_lines.crs)
-
 def get_entry_distances(poly_geom, line_geom):
     """Return the min and max distances along the line within the polygon."""
     from shapely.geometry import Point
@@ -281,7 +272,7 @@ def get_entry_distances(poly_geom, line_geom):
 def generate_line_list(route, parcels, owner_client=None, owner_classification_cache=None):
     print(f"Generating line list for route: {route.name}")
     route.centerline.load_data()
-    centerline_gdf = clean_line_features(route.centerline._gdf)
+    centerline_gdf = utils.clean_line_features(route.centerline._gdf)
 
     route.corridor.load_data()
     corridor_gdf = route.corridor._gdf

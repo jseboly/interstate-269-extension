@@ -66,7 +66,9 @@ PERMIT_SOURCES = [
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/3",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Interstate Highway'
+        description = 'Interstate Highway',
+        name_field="name",
+        id_field="permanent_identifier"
     ),
     models.GISLayer(
         name="US Highways",
@@ -74,7 +76,9 @@ PERMIT_SOURCES = [
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/4",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'US Highway'
+        description = 'US Highway',
+        name_field="name",
+        id_field="permanent_identifier"
     ),
     models.GISLayer(
         name="State Highways",
@@ -82,7 +86,9 @@ PERMIT_SOURCES = [
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/5",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'State Highway'
+        description = 'State Highway',
+        name_field="name",
+        id_field="permanent_identifier"
     ),
     models.GISLayer(
         name="Local Roads",
@@ -90,7 +96,9 @@ PERMIT_SOURCES = [
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/7",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'LocalRoad'
+        description = 'LocalRoad',
+        name_field="name",
+        id_field="permanent_identifier"
     ),
     models.GISLayer(
             name="Railroads",
@@ -98,7 +106,9 @@ PERMIT_SOURCES = [
             source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/6",
             bbox=PROJECT_BBOX,
             epsg_code=PROJECT_CRS,
-            description = 'Railroad'
+            description = 'Railroad',
+            name_field="railowner",
+            id_field="permanent_identifier"
         )
 ]
 
