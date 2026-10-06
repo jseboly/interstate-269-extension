@@ -165,15 +165,15 @@ ENVIRONMENTAL_SOURCES = [
     )
 ]
 
-STRUCTURES_SOURCES = [
-    models.GISLayer(
+STRUCTURES_SOURCE = models.GISLayer(
         name="Structures",
         source_type=models.GISFileType.FEATURE_SERVICE,
         source_path="https://services2.arcgis.com/FiaPA4ga0iQKduv3/arcgis/rest/services/USA_Structures_View/FeatureServer/0",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Structure'
+        description = 'Structure',
+        name_field="PRIM_OCC",
+        id_field="BUILD_ID"
     )
-]
 
 

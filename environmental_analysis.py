@@ -98,14 +98,3 @@ def main():
             print(f"Error occurred while analyzing route {route.name}: {e}")
         finally:
             route.centerline.unload()
-
-def get_crossing_m_value(geometry, route_line):
-    intersection = geometry.intersection(route_line)
-    if intersection.is_empty:
-        return None
-
-    coords = shapely.get_coordinates(intersection)
-    if len(coords) == 0:
-        return None
-
-    return min(route_line.project(Point(coords_i)) for coords_i in coords)

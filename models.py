@@ -127,5 +127,5 @@ class ProjectRoute:
     line_list: pd.DataFrame = field(default=None)
     permits: dict = field(default_factory=dict)
     env_constraints: dict = field(default_factory=dict)
-    structures: dict = field(default_factory=dict)
+    structures: pd.DataFrame = field(default=None)
     description: str = field(default="")
