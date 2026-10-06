@@ -44,7 +44,6 @@ def main():
                         ignore_index=True
                         ).drop(columns=['geometry'])
                     route.permits[layer.description] = crossings
-                    print(crossings)
                 except Exception as e:
                     print(f"Error processing layer: {layer.name}, {e}")
                 finally:

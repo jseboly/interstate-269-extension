@@ -119,7 +119,9 @@ ENVIRONMENTAL_SOURCES = [
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/USA_Wetlands/FeatureServer/0",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Wetland'
+        description = 'Wetland',
+        name_field="WETLAND_TYPE",
+        id_field="OBJECTID"
     ),
     models.GISLayer(
         name="Water Bodies",
@@ -127,7 +129,9 @@ ENVIRONMENTAL_SOURCES = [
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Hydrography_Dataset_Plus_Medium_Resolution/FeatureServer/1",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Waterbody'
+        description = 'Waterbody',
+        name_field="GNIS_NAME",
+        id_field="OBJECTID"
     ),
     models.GISLayer(
         name="Streams",
@@ -135,15 +139,19 @@ ENVIRONMENTAL_SOURCES = [
         source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Hydrography_Dataset_Plus_Medium_Resolution/FeatureServer/2",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description='Stream'
+        description='Stream',
+        name_field="GNIS_NAME",
+        id_field="GNIS_ID"
     ),
     models.GISLayer(
         name="Flood Zones",
         source_type=models.GISFileType.FEATURE_SERVICE,
-        source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/National_Flood_Hazard_Layer/FeatureServer/0",
+        source_path="https://services5.arcgis.com/7weheFjxuNkGGiZi/arcgis/rest/services/USA_Flood_Hazard_Areas_view/FeatureServer/0",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Flood Zone'
+        description = 'Flood Zone',
+        name_field="FLD_ZONEw",
+        id_field="OBJECTID"
     ),
     models.GISLayer(
         name="Protected Areas",
@@ -151,7 +159,9 @@ ENVIRONMENTAL_SOURCES = [
         source_path="https://services.arcgis.com/v01gqwM5QqNysAAi/arcgis/rest/services/PADUS_Protection_Status_by_GAP_Status_Code/FeatureServer/0",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'Protected Area'
+        description = 'Protected Area',
+        name_field="Unit_Nm",
+        id_field="OBJECTID"
     )
 ]
 
