@@ -1,9 +1,9 @@
 import pandas as pd
+import shapely
+from shapely import Point
 import project_config as cfg
 import utils
 from analyze_parcels import get_entry_distances
-import shapely
-from shapely import Point
 
 def main():
     for route in cfg.ROUTES_CONFIG:
@@ -71,6 +71,20 @@ def main():
                         impacts[["start_meas", "end_meas"]] = pd.DataFrame(
                             valid_distances.tolist(), index=valid_distances.index
                         )
+                        impacts["length_feet"] = impacts["end_meas"] - impacts["start_meas"]
+
+                        route.corridor.load_data()
+                        try:
+                            corridor_gdf = route.corridor._gdf
+                            area_data = pd.DataFrame({
+                                "area_acres": impacts.geometry.intersection(
+                                    corridor_gdf.geometry.unary_union
+                                ).area / 43560,
+                            }, index=impacts.index)
+                            impacts = impacts.join(area_data)
+                        finally:
+                            route.corridor.unload()
+                        
                     route.env_constraints[layer.description] = impacts.sort_values(
                                     by='start_meas', 
                                     ignore_index=True
