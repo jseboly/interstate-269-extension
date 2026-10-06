@@ -129,3 +129,22 @@ class ProjectRoute:
     env_constraints: dict = field(default_factory=dict)
     structures: pd.DataFrame = field(default=None)
     description: str = field(default="")
+
+    def calculate_basic_metrics(self) -> None:
+        centerline = self.centerline.load_data()
+        try:
+            self.total_length = centerline.geometry.length.sum()
+            print(f"Total length for route {self.name}: {self.total_length}")
+        except Exception as e:
+            print(f"Error occurred while calculating total length for route {self.name}: {e}")
+        finally:
+            self.centerline.unload()
+
+        corridor = self.corridor.load_data()
+        try:
+            self.total_area = corridor.geometry.area.sum()
+            print(f"Total area for route {self.name}: {self.total_area}")
+        except Exception as e:
+            print(f"Error occurred while calculating total area for route {self.name}: {e}")
+        finally:
+            self.corridor.unload()
