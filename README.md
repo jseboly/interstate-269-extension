@@ -15,6 +15,11 @@ proceeds southwest from Millington, bypasses Meeman-Shelby Forest State Park to
 the south, and then continues southwest towards West Memphis, Arkansas and ends
 at the I-55 and I-40 interchange.
 
+## Architecture
+
+See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current pipeline diagram,
+including configured inputs, analysis stages, shared components, and outputs.
+
 ## Configuration
 The project configuration is managed entirely within project_config.py. All paths, data sources, and analysis parameters are defined as Python data structures. 
 
@@ -75,4 +80,3 @@ not a calibrated probability; ambiguous names are classified as `unknown`.
 ### Crossing Analysis
 ### Environmental Analysis
 ### Structure Analysis
-
