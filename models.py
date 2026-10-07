@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from io import BytesIO
 import os
 from typing import Optional
 import pandas as pd
@@ -13,7 +12,7 @@ class GISFileType(str, Enum):
     FEATURE_SERVICE = "feature_service"
 
 @dataclass
-class GISLayer:
+class GISLayer: # A reference to a GIS file with information about its source and contents
     name: str
     source_path: str
     source_type: GISFileType
@@ -22,6 +21,8 @@ class GISLayer:
     
     # Internal attribute holding the GeoDataFrame, hidden from initial creation
     _gdf: Optional[gpd.GeoDataFrame] = field(default=None, repr=False, init=False)
+    
+    # Other optional attributes
     name_field: Optional[str] = None
     id_field: Optional[str] = None
     type_field: Optional[str] = None
@@ -35,19 +36,25 @@ class GISLayer:
         if self._gdf is None:
             print(f"Reading {self.name} geometry into geodataframe...")
             if self.source_type == GISFileType.FEATURE_SERVICE:
-                self._gdf = self._load_from_feature_service(self.source_path, bbox=self.bbox)
+                self._gdf = self._load_from_feature_service(
+                    self.source_path, bbox=self.bbox)
             elif self.source_type == GISFileType.SHAPEFILE:
-                self._gdf = gpd.read_file(self.source_path).to_crs(self.epsg_code)
+                self._gdf = gpd.read_file(
+                    self.source_path
+                    ).to_crs(self.epsg_code)
             else:
                 gdb_path, fc_name = os.path.split(self.source_path)
-                self._gdf = gpd.read_file(gdb_path, layer=fc_name).to_crs(self.epsg_code)
+                self._gdf = gpd.read_file(
+                    gdb_path, layer=fc_name
+                    ).to_crs(self.epsg_code)
         return self._gdf
 
     def _load_from_feature_service(
         self, url: str, bbox=None, timeout: float = 30
     ) -> gpd.GeoDataFrame:
-        """Handles REST / Web Feature Service loads with server-side spatial filtering."""
-        
+        """
+        Handles REST / Web Feature Service loads with server-side spatial filtering.
+        """        
         # Method A: Standard GeoPandas read using GDAL/Fiona driver
         try:
             return gpd.read_file(url, bbox=bbox)
@@ -118,7 +125,7 @@ class GISLayer:
         print(f"Unloaded {self.name} geodataframe.")
 
 @dataclass
-class ProjectRoute:
+class ProjectRoute: # A reference to a project route option to be analyzed
     name: str    
     centerline: GISLayer
     corridor: GISLayer = field(default=None)
@@ -131,12 +138,16 @@ class ProjectRoute:
     description: str = field(default="")
 
     def calculate_basic_metrics(self) -> None:
+        """
+        Calculates total length for the route and area of the corridor.
+        """
         centerline = self.centerline.load_data()
         try:
             self.total_length = centerline.geometry.length.sum()
             print(f"Total length for route {self.name}: {self.total_length}")
         except Exception as e:
-            print(f"Error occurred while calculating total length for route {self.name}: {e}")
+            print(f"Error occurred while calculating total length for route "
+                  f"{self.name}: {e}")
         finally:
             self.centerline.unload()
 
@@ -145,6 +156,7 @@ class ProjectRoute:
             self.total_area = corridor.geometry.area.sum()
             print(f"Total area for route {self.name}: {self.total_area}")
         except Exception as e:
-            print(f"Error occurred while calculating total area for route {self.name}: {e}")
+            print(f"Error occurred while calculating total area for route "
+                  f"{self.name}: {e}")
         finally:
             self.corridor.unload()

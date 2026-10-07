@@ -13,6 +13,7 @@ def main():
     analyze_permits()
     analyze_env()
     analyze_structures()
+    # write_results()
 
 if __name__ == "__main__":
     main()

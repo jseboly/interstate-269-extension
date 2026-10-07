@@ -182,142 +182,134 @@ def classify_owner_types(gdf, client, cache):
         [classification[1] for classification in classifications], dtype="Float64"
     )
 
+def _resolve_field(field_name, gdf):
+    if field_name is None:
+        return None
+    if field_name in gdf.columns:
+        return field_name
+    matches = [
+        col for col in gdf.columns 
+        if str(col).lower() == str(field_name).lower()
+        ]
+    return matches[0] if matches else None
+
 def merge_parcel_data():
-    """Merges parcel data from all configured sources into a single GeoDataFrame."""
+    """
+    Merges parcel data from all configured sources into a single GeoDataFrame.
+    """
     print("Merging parcel data from all sources...")
     clean_gdfs = []
     
     for source in cfg.PARCEL_SOURCES:
         source.load_data()
-        gdf = source._gdf
+        try:
+            gdf = source._gdf
 
-        def resolve_field(field_name):
-            if field_name is None:
-                return None
-            if field_name in gdf.columns:
-                return field_name
-            matches = [col for col in gdf.columns if str(col).lower() == str(field_name).lower()]
-            return matches[0] if matches else None
+            owner_key = _resolve_field(source.name_field, gdf)
+            parcel_key = _resolve_field(source.id_field, gdf)
 
-        owner_key = resolve_field(source.name_field)
-        parcel_key = resolve_field(source.id_field)
+            if owner_key is None or parcel_key is None:
+                available = list(gdf.columns)
+                raise KeyError(
+                    f"Could not find required parcel fields for {source.name}. "
+                    f"Expected owner='{source.name_field}', parcel_id='{source.id_field}'. "
+                    f"Available columns: {available}"
+                )
 
-        if owner_key is None or parcel_key is None:
-            available = list(gdf.columns)
-            raise KeyError(
-                f"Could not find required parcel fields for {source.name}. "
-                f"Expected owner='{source.name_field}', parcel_id='{source.id_field}'. "
-                f"Available columns: {available}"
-            )
-
-        column_name_mapping = {
-            owner_key: "Owner",
-            parcel_key: "ParcelID"
-        }
-        geom_col = gdf.geometry.name
-        cols_to_keep = list(column_name_mapping.keys()) + [geom_col]
-        cleaned = gdf[cols_to_keep].rename(columns=column_name_mapping)
-        clean_gdfs.append(cleaned)
-
-        # Removed as it's now handled in the append above.
+            column_name_mapping = {
+                owner_key: "Owner",
+                parcel_key: "ParcelID"
+            }
+            geom_col = gdf.geometry.name
+            cols_to_keep = list(column_name_mapping.keys()) + [geom_col]
+            cleaned = gdf[cols_to_keep].rename(columns=column_name_mapping)
+            clean_gdfs.append(cleaned)
+        except Exception as e:
+            print(f"Error occurred while processing source {source.name}: {e}")
+        finally:
+            source.unload()
         
     merged_gdf = gpd.GeoDataFrame(
         pd.concat(clean_gdfs, ignore_index=True),
         crs=cfg.PROJECT_CRS
     )
-
-    for source in cfg.PARCEL_SOURCES:
-        source.unload()
+    print("Successfully merged parcel data.")
     for cleaned_gdf in clean_gdfs:
         del cleaned_gdf
-
     return merged_gdf
 
-def get_entry_distances(poly_geom, line_geom):
-    """Return the min and max distances along the line within the polygon."""
-    from shapely.geometry import Point
-
-    intersection = poly_geom.intersection(line_geom)
-    if intersection.is_empty:
-        return None, None
-
-    def project_parts(geom):
-        if geom.is_empty:
-            return []
-
-        if geom.geom_type == "Point":
-            return [line_geom.project(geom)]
-
-        if geom.geom_type in {"LineString", "LinearRing"}:
-            return [
-                line_geom.project(Point(coord))
-                for coord in geom.coords
-            ]
-
-        if hasattr(geom, "geoms"):
-            return [
-                distance
-                for part in geom.geoms
-                for distance in project_parts(part)
-            ]
-
-        return []
-
-    distances = project_parts(intersection)
-    if not distances:
-        return None, None
-
-    return min(distances), max(distances)
-
 def generate_line_list(route, parcels, owner_client=None, owner_classification_cache=None):
+    """
+    Generates the line list with parcels intersecting the route corridor.
+    """
     print(f"Generating line list for route: {route.name}")
     route.centerline.load_data()
-    centerline_gdf = utils.clean_line_features(route.centerline._gdf)
-
     route.corridor.load_data()
     corridor_gdf = route.corridor._gdf
 
-    intersecting_polygons = gpd.sjoin(
-        parcels, 
-        corridor_gdf[['geometry']],
-        how='inner', 
-        predicate='intersects'
-    ).copy()
+    try:
+        intersecting_polygons = gpd.sjoin(
+            parcels, 
+            corridor_gdf[['geometry']],
+            how='inner', 
+            predicate='intersects'
+        ).copy()
 
-    distances = intersecting_polygons.geometry.apply(
-        lambda poly: get_entry_distances(poly, centerline_gdf.geometry.iloc[0])
-    )
+        # Ensure the centerline is one single line feature
+        centerline_gdf = utils.clean_line_features(route.centerline._gdf)
 
-    intersecting_polygons[["entry_distance", "exit_distance"]] = pd.DataFrame(
-        distances.tolist(), index=intersecting_polygons.index
-    )
+        distances = intersecting_polygons.geometry.apply(
+            lambda poly: utils.get_polygon_m_values(
+                poly, centerline_gdf.geometry.iloc[0]
+                )
+        )
 
-    sorted_polygons = intersecting_polygons.sort_values(by='entry_distance').reset_index(drop=True)
-    sorted_polygons["feet_crossed"] = sorted_polygons["exit_distance"] - sorted_polygons["entry_distance"]
-    route.centerline.unload()
-    del centerline_gdf
+        intersecting_polygons[["entry_distance", "exit_distance"]] = pd.DataFrame(
+            distances.tolist(), index=intersecting_polygons.index
+        )
 
-    if corridor_gdf.crs != sorted_polygons.crs:
-        corridor_gdf = corridor_gdf.to_crs(sorted_polygons.crs)
-    corridor_geometry = corridor_gdf.geometry.unary_union
+        sorted_polygons = intersecting_polygons.sort_values(
+            by='entry_distance').reset_index(drop=True)
+        sorted_polygons["feet_crossed"] = (sorted_polygons["exit_distance"] - 
+                                           sorted_polygons["entry_distance"])
+        print(f"Selected {len(sorted_polygons)} parcels for route: {route.name}")
+    except Exception as e:
+        print(f"Error occurred while processing route {route.name}: {e}")
+    finally:
+        route.centerline.unload()
+        del centerline_gdf
 
-    area_data = pd.DataFrame({
-        "parcel_area_acres": sorted_polygons.geometry.area / 43560,
-        "corridor_area_acres": sorted_polygons.geometry.intersection(
-            corridor_geometry
-        ).area / 43560,
-    }, index=sorted_polygons.index)
-    sorted_polygons = sorted_polygons.join(area_data)
-    if owner_classification_cache is None:
-        owner_classification_cache = {}
-    classify_owner_types(
-        sorted_polygons, owner_client, owner_classification_cache
-    )
-    route.line_list = sorted_polygons
-    route.corridor.unload()
+    try:
+        if corridor_gdf.crs != sorted_polygons.crs:
+            corridor_gdf = corridor_gdf.to_crs(sorted_polygons.crs)
+        corridor_geometry = corridor_gdf.geometry.unary_union
+        
+        area_data = pd.DataFrame({
+            "parcel_area_acres": sorted_polygons.geometry.area / 43560,
+            "corridor_area_acres": sorted_polygons.geometry.intersection(
+                corridor_geometry
+            ).area / 43560,
+        }, index=sorted_polygons.index)
+        sorted_polygons = sorted_polygons.join(area_data)
+
+        if owner_classification_cache is None:
+            owner_classification_cache = {}
+        classify_owner_types(
+            sorted_polygons, owner_client, owner_classification_cache
+        )
+        route.line_list = sorted_polygons
+        print(f"Generated line list for route: {route.name}")
+    except Exception as e:
+        print(f"Error occurred while processing route {route.name}: {e}")
+    finally:
+        route.corridor.unload()
 
 def main():
-    print("Analyzing parcels...")
+    """
+    Analyzes parcel impacts and generates the line list for each route in 
+    ROUTES_CONFIG.
+    """
+    print("Starting parcel analysis...")
     parcels = merge_parcel_data()
     owner_client = create_owner_classification_client()
     owner_classification_cache = load_owner_classification_cache()

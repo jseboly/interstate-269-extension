@@ -15,11 +15,6 @@ proceeds southwest from Millington, bypasses Meeman-Shelby Forest State Park to
 the south, and then continues southwest towards West Memphis, Arkansas and ends
 at the I-55 and I-40 interchange.
 
-## Architecture
-
-See [ARCHITECTURE.md](./ARCHITECTURE.md) for the current pipeline diagram,
-including configured inputs, analysis stages, shared components, and outputs.
-
 ## Configuration
 The project configuration is managed entirely within project_config.py. All paths, data sources, and analysis parameters are defined as Python data structures. 
 
@@ -62,8 +57,11 @@ When all configuration settings are ready, run "Orchestrator.py" to perform the 
 
 ## Provided Results
 Here is a description of the results that this tool can calculate for you.
+
 ### Parcel Analysis
-Owner classification is optional. To enable it, install the OpenAI SDK with
+All landowner parcels intersecting the centerline and corridor for each route will be pulled and arranged in tabluar (line list) form. The start milepost, end milepost, centerline length, and corridor area for each parcel will be included.
+
+Counts, lengths, and areas impacted can be broken down by owner type if owner classification (optional) is enabled. To enable it, install the OpenAI SDK with
 `python -m pip install openai` and set `OPENAI_API_KEY` in the environment
 before running the analysis. `OWNER_CLASSIFICATION_MODEL` can override the
 default model (`gpt-4o-mini`). Without an API key, rows receive
@@ -77,6 +75,11 @@ cache may contain personal owner names. Review your data-handling requirements
 before enabling external classification. Confidence is the model's estimate,
 not a calibrated probability; ambiguous names are classified as `unknown`.
 
-### Crossing Analysis
+### Permit Analysis
+A permit crossing analysis will be performed for all layers configured in `PERMIT_SOURCES`. The number of crossings by type, a list of crossings (with names if available), and the milepost for each crossing will be pulled.
+
 ### Environmental Analysis
+An environmental constraint analysis will be performed for all layers configured in `ENVIRONMENTAL_SOURCES`. Environmental layers can be either lines or polygons. For line layers, a list of impacted features with the milepost of their intersection with the route will be generated. For polygon layers, the list of impacted features will include the start milepost, end milepost, length affected, and area affected.
+
 ### Structure Analysis
+The number of structures within the corridor for each route will also be calculated, along with a list of structures and their types.

@@ -1,11 +1,10 @@
-import pandas as pd
-import geopandas as gpd
-import shapely
-from shapely.geometry import Point
 import project_config as cfg
 import utils
 
 def main():
+    """
+    Analyzes the required permit crossings for each route.
+    """
     for route in cfg.ROUTES_CONFIG:
         route.centerline.load_data()
         try:
@@ -44,6 +43,8 @@ def main():
                         ignore_index=True
                         ).drop(columns=['geometry'])
                     route.permits[layer.description] = crossings
+                    print(f"Found {len(crossings)} permit crossings for layer "
+                          f"{layer.name} on route {route.name}.")
                 except Exception as e:
                     print(f"Error processing layer: {layer.name}, {e}")
                 finally:

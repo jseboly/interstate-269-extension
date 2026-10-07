@@ -5,9 +5,9 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
 RESULTS_FILE = os.path.join(PROJECT_ROOT, "analysis_results.md")
-PROJECT_CRS = 2274
+PROJECT_CRS = 2274 # NAD 1983 TN State Plane - US Feet
 PROJECT_BBOX = (699751.991850, 328985.445673, 804671.224006, 415248.428825)
-ROW_WIDTH_FEET = 150
+ROW_WIDTH_FEET = 150 # Width of ROW from centerline on each side
 
 # corridors to analyze
 ROUTES_CONFIG = [

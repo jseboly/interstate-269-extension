@@ -1,25 +1,26 @@
 import pandas as pd
-import shapely
-from shapely import Point
 import project_config as cfg
 import utils
-from analyze_parcels import get_entry_distances
 
 def main():
+    """
+    Analyzes the environmental constraints for each route.
+    """
     for route in cfg.ROUTES_CONFIG:
         route.centerline.load_data()
         try:
             route_gdf = utils.clean_line_features(route.centerline._gdf)
             route_line = route_gdf.geometry.iloc[0]
             for layer in cfg.ENVIRONMENTAL_SOURCES:
-                print(f"Analyzing route {route.name} with environmental layer {layer.name}...")
+                print(f"Analyzing route {route.name} impacts on environmental "
+                      f"layer {layer.name}...")
                 layer.load_data()
                 try:
                     layer_gdf = layer._gdf
                     layer_gdf = layer_gdf[layer_gdf.geometry.notnull() & ~layer_gdf.is_empty].copy()
-
                     if layer_gdf.empty:
-                        print(f"Skipping {layer.name} for {route.name}: no valid geometries loaded.")
+                        print(f"Skipping {layer.name} for {route.name}: no "
+                              f"valid geometries loaded.")
                         route.env_constraints[layer.description] = pd.DataFrame(
                             columns=["UniqueID", "Name"]
                         )
@@ -53,13 +54,20 @@ def main():
                         continue
 
                     if layer_geom_type in ["LineString", "MultiLineString"]:
+                        # If the layer geometry is a line, only the measure of 
+                        # the intersection is needed
                         impacts["start_meas"] = impacts.geometry.map(
                             lambda geom: utils.get_crossing_m_value(geom, route_line)
                             )
                         impacts = impacts.dropna(subset=["start_meas"]).copy()
                     elif layer_geom_type in ["Polygon", "MultiPolygon"]:
+                        # If the layer geometry is a polygon, the start and 
+                        # end measures are needed along with the length and 
+                        # area affected for each polygon
+
+                        # Calculate the start and end measures for each polygon
                         distances = impacts.geometry.apply(
-                            lambda poly: get_entry_distances(poly, route_line)
+                            lambda poly: utils.get_polygon_m_values(poly, route_line)
                         )
                         valid_distances = distances.dropna()
                         if valid_distances.empty:
@@ -67,12 +75,15 @@ def main():
                                 columns=["UniqueID", "Name"]
                             )
                             continue
-
                         impacts[["start_meas", "end_meas"]] = pd.DataFrame(
                             valid_distances.tolist(), index=valid_distances.index
                         )
-                        impacts["length_feet"] = impacts["end_meas"] - impacts["start_meas"]
+                        
+                        # Calculate the length in feet for each polygon
+                        impacts["length_feet"] = (impacts["end_meas"] - 
+                                                  impacts["start_meas"])
 
+                        # Calculate the area in acres for each polygon
                         route.corridor.load_data()
                         try:
                             corridor_gdf = route.corridor._gdf
@@ -85,11 +96,13 @@ def main():
                         finally:
                             route.corridor.unload()
                         
+                    # save results to route object
                     route.env_constraints[layer.description] = impacts.sort_values(
                                     by='start_meas', 
                                     ignore_index=True
                                     ).drop(columns=['geometry'])
-                    print(f"Finished analyzing route {route.name} with environmental layer {layer.name}")
+                    print(f"Finished analyzing route {route.name} with "
+                          f"environmental layer {layer.name}")
                 except Exception as e:
                     print(f"Error occurred while analyzing layer {layer.name}: {e}")
                 finally:
@@ -98,3 +111,4 @@ def main():
             print(f"Error occurred while analyzing route {route.name}: {e}")
         finally:
             route.centerline.unload()
+            print(f"Environmental analysis completed for route {route.name}.")
