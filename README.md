@@ -53,10 +53,20 @@ To adjust the analysis for new routes, updated parameters, or different layers:
 * Swap Data Layers: Update source_path URLs or local paths under the appropriate source list (`ENVIRONMENTAL_SOURCES`, `PARCEL_SOURCES`, etc.).
 
 ## Execution
-When all configuration settings are ready, run `Orchestrator.py` to perform the analysis. The results of the analysis will be written to the file specified as `RESULTS_FILE` in the config file. 
+When all configuration settings are ready, run `orchestrator.py` to perform the analysis. The results of the analysis will be written to `Results.md`. This run saves the route summary metrics to `analysis_results_cache.json`; while editing the results writer, regenerate the Markdown without rerunning analysis with:
+
+```powershell
+.\.venv\Scripts\python.exe .\orchestrator.py --write-results-only
+```
+
+The writer-only option requires a cache created by a full analysis run. The cache contains only the values needed for the route comparison table, not the underlying GIS data or detailed analysis outputs.
 
 ## Provided Results
 Here is a description of the results that this tool can calculate for you.
+
+The generated `Results.md` begins with a route comparison table showing total
+centerline length in miles, corridor area in acres, parcel count, and permit
+crossing count for each configured route.
 
 ### Parcel Analysis
 All landowner parcels intersecting the centerline and corridor for each route will be pulled and arranged in tabluar (line list) form. The start milepost, end milepost, centerline length, and corridor area for each parcel will be included.

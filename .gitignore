@@ -5,3 +5,4 @@ ShelbyCountyParcels.qmd
 ShelbyCountyParcels.shp
 ShelbyCountyParcels.shx
 owner_classification_cache.json
+analysis_results_cache.json

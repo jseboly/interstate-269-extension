@@ -4,7 +4,8 @@ import models
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent
-RESULTS_FILE = os.path.join(PROJECT_ROOT, "analysis_results.md")
+RESULTS_FILE = os.path.join(PROJECT_ROOT, "Results.md")
+RESULTS_CACHE_FILE = os.path.join(PROJECT_ROOT, "analysis_results_cache.json")
 PROJECT_CRS = 2274 # NAD 1983 TN State Plane - US Feet
 PROJECT_BBOX = (699751.991850, 328985.445673, 804671.224006, 415248.428825)
 ROW_WIDTH_FEET = 150 # Width of ROW from centerline on each side
@@ -175,5 +176,3 @@ STRUCTURES_SOURCE = models.GISLayer(
         name_field="PRIM_OCC",
         id_field="BUILD_ID"
     )
-
-
