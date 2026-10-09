@@ -66,12 +66,19 @@ Here is a description of the results that this tool can calculate for you.
 
 The generated `Results.md` begins with a route comparison table showing total
 centerline length in miles, corridor area in acres, parcel count, and permit
-crossing count for each configured route.
+crossing count for each configured route. The same table groups landowner
+counts by owner type, reports the total number of unique landowners in that
+section header, and lists parcel counts in a separate `Parcels by type`
+subsection. The permit section header reports the total crossing count, with
+counts grouped by configured permit type below it. Bold group rows act as
+subsections within the Markdown table.
 
 ### Parcel Analysis
 All landowner parcels intersecting the centerline and corridor for each route will be pulled and arranged in tabluar (line list) form. The start milepost, end milepost, centerline length, and corridor area for each parcel will be included.
 
-Counts, lengths, and areas impacted can be broken down by owner type if owner classification (optional) is enabled. To enable it, install the OpenAI SDK with
+The route comparison table reports distinct landowners and parcels by owner
+type. Classification is optional; without it, uncached records are grouped as
+`not_classified`. To enable classification, install the OpenAI SDK with
 `python -m pip install openai` and set `OPENAI_API_KEY` in the environment
 before running the analysis. `OWNER_CLASSIFICATION_MODEL` can override the
 default model (`gpt-4o-mini`). Without an API key, rows receive

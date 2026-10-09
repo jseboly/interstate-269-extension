@@ -2,11 +2,30 @@
 
 ## Executive Summary
 
-Comparison of the route alternatives based on the completed GIS analysis.
+Comparison of summary metrics across route alternatives.
 
-| Route | Total length (mi) | Total area (acres) | Parcel count | Permit crossing count |
-|:--|--:|--:|--:|--:|
-| North Option | 21.22 | 771.48 | 44 | 2 |
-| South Option | 20.53 | 746.66 | 75 | 12 |
+| Metric | North Option | South Option |
+|:--|--:|--:|
+| Total length (mi) | **21.22** | **20.53** |
+| Total area (acres) | **771.48** | **746.66** |
+| **Landowners by type** | **38** | **61** |
+| Local government | 0 | 3 |
+| Nonprofit | 0 | 1 |
+| Private business | 5 | 7 |
+| Private individual | 32 | 49 |
+| State | 0 | 1 |
+| Unknown | 1 | 0 |
+| **Parcels by type** | **44** | **75** |
+| Local government | 0 | 3 |
+| Nonprofit | 0 | 1 |
+| Private business | 6 | 8 |
+| Private individual | 37 | 61 |
+| State | 0 | 2 |
+| Unknown | 1 | 0 |
+| **Permits by type** | **2** | **12** |
+| Interstate Highway | 0 | 1 |
+| US Highway | 0 | 1 |
+| State Highway | 0 | 4 |
+| Local Road | 1 | 3 |
+| Railroad | 1 | 3 |
 
-Length is the summed centerline length; area is the summed corridor polygon area. Parcel count is the number of records in each route's parcel line list. Permit crossing count is the total of recorded crossings across all configured permit layers.

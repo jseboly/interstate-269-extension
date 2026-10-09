@@ -97,7 +97,7 @@ PERMIT_SOURCES = [
         source_path="https://cartowfs.nationalmap.gov/arcgis/rest/services/transportation/FeatureServer/7",
         bbox=PROJECT_BBOX,
         epsg_code=PROJECT_CRS,
-        description = 'LocalRoad',
+        description = 'Local Road',
         name_field="name",
         id_field="permanent_identifier"
     ),
