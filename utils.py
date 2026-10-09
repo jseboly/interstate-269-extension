@@ -40,7 +40,7 @@ def get_crossing_m_value(geometry, route_line):
     return min(
         route_line.project(Point(coords))
         for coords in shapely.get_coordinates(intersection)
-    )
+    )/5280
 
 def get_polygon_m_values(poly_geom, line_geom):
     """
@@ -77,4 +77,4 @@ def get_polygon_m_values(poly_geom, line_geom):
     if not distances:
         return None, None
 
-    return min(distances), max(distances)
+    return min(distances)/5280, max(distances)/5280

@@ -70,8 +70,13 @@ crossing count for each configured route. The same table groups landowner
 counts by owner type, reports the total number of unique landowners in that
 section header, and lists parcel counts in a separate `Parcels by type`
 subsection. The permit section header reports the total crossing count, with
-counts grouped by configured permit type below it. Bold group rows act as
-subsections within the Markdown table.
+counts grouped by configured permit type below it. Environmental feature
+counts are shown by type, along with a structure count. Total length and total
+area labels and values are bolded. Bold group rows act as subsections within
+the Markdown table. The report then adds a `##` section for each route and
+separate `###` tables for parcels, permits, environmental constraints, and
+structures. These detailed tables include the available feature names,
+identifiers, types, and analysis measurements.
 
 ### Parcel Analysis
 All landowner parcels intersecting the centerline and corridor for each route will be pulled and arranged in tabluar (line list) form. The start milepost, end milepost, centerline length, and corridor area for each parcel will be included.

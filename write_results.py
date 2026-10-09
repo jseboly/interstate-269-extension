@@ -78,6 +78,16 @@ def collect_route_summaries(routes):
             if route.permits is not None
             else None
         )
+        environmental_type_counts = (
+            {
+                feature_type: len(features)
+                for feature_type, features in route.env_constraints.items()
+            }
+            if route.env_constraints is not None and (
+                route.env_constraints or not cfg.ENVIRONMENTAL_SOURCES
+            )
+            else None
+        )
         summaries.append({
             "name": route.name,
             "total_length": (
@@ -97,6 +107,12 @@ def collect_route_summaries(routes):
                 else None
             ),
             "permit_type_counts": permit_type_counts,
+            "environmental_type_counts": environmental_type_counts,
+            "structure_count": (
+                len(route.structures)
+                if route.structures is not None
+                else None
+            ),
         })
     return summaries
 
@@ -166,7 +182,147 @@ def _format_count(value):
 
 
 def _format_owner_type(owner_type):
-    return owner_type.replace("_", " ").capitalize()
+    if pd.isna(owner_type):
+        return "Not Classified"
+    return str(owner_type).replace("_", " ").title()
+
+
+def _markdown_cell(value):
+    if value is None or pd.isna(value):
+        return ""
+    if isinstance(value, float):
+        return f"{value:,.2f}"
+    return str(value).replace("|", r"\|").replace("\r", " ").replace("\n", " ")
+
+
+def _markdown_table(data, columns, empty_message):
+    if data is None:
+        return "Not available."
+    if data.empty:
+        return empty_message
+
+    available_columns = [
+        (column, label)
+        for column, label in columns
+        if column in data.columns
+    ]
+    if not available_columns:
+        return "No reportable fields available."
+
+    headers = [label for _, label in available_columns]
+    lines = [
+        "| " + " | ".join(headers) + " |",
+        "| " + " | ".join("---" for _ in headers) + " |",
+    ]
+    for _, record in data.iterrows():
+        lines.append(
+            "| "
+            + " | ".join(
+                _markdown_cell(record[column])
+                for column, _ in available_columns
+            )
+            + " |"
+        )
+    return "\n".join(lines)
+
+
+def _combine_layer_records(layer_data):
+    records = []
+    for feature_type, data in (layer_data or {}).items():
+        if data is None:
+            continue
+        for _, record in data.iterrows():
+            records.append({
+                "Type": feature_type,
+                **record.to_dict(),
+            })
+    return pd.DataFrame(records)
+
+
+def _route_detail_sections(route):
+    parcel_data = route.line_list
+    if parcel_data is not None and "OwnerType" in parcel_data.columns:
+        parcel_data = parcel_data.copy()
+        parcel_data["OwnerType"] = parcel_data["OwnerType"].map(
+            _format_owner_type
+        )
+
+    parcel_columns = (
+        ("ParcelID", "Parcel ID"),
+        ("Owner", "Owner"),
+        ("OwnerType", "Owner type"),
+        ("entry_distance", "Entry milepost"),
+        ("exit_distance", "Exit milepost"),
+        ("feet_crossed", "Length crossed (ft)"),
+        ("parcel_area_acres", "Parcel area (acres)"),
+        ("corridor_area_acres", "Corridor area (acres)"),
+    )
+    sections = [
+        f"## {route.name} Details\n",
+        "### Parcel Line List\n",
+        _markdown_table(
+            parcel_data,
+            parcel_columns,
+            "No parcels found.",
+        ),
+        "\n",
+        "### Permit Crossing List\n",
+    ]
+
+    permits = _combine_layer_records(route.permits)
+    sections.append(_markdown_table(
+        permits if route.permits is not None else None,
+        (
+            ("Type", "Type"),
+            ("UniqueID", "ID"),
+            ("Name", "Name"),
+            ("Measure", "Milepost"),
+        ),
+        "No permit crossings found.",
+    ))
+    sections.extend(("\n", "### Environmental constraints\n"))
+    environmental = _combine_layer_records(route.env_constraints)
+    sections.append(_markdown_table(
+        environmental if route.env_constraints is not None else None,
+        (
+            ("Type", "Type"),
+            ("UniqueID", "ID"),
+            ("Name", "Name"),
+            ("start_meas", "Start milepost"),
+            ("end_meas", "End milepost"),
+            ("length_feet", "Length affected (ft)"),
+            ("area_acres", "Area affected (acres)"),
+        ),
+        "No environmental constraints found.",
+    ))
+
+    sections.extend(("\n", "### Structures\n"))
+    structure_columns = []
+    structure_source = cfg.STRUCTURES_SOURCE
+    structure_name_field = structure_source.name_field
+    structure_id_field = structure_source.id_field
+    if route.structures is not None:
+        structure_columns.append((structure_id_field, "ID"))
+        if structure_name_field:
+            structure_columns.append(
+                (structure_name_field, "Type")
+            )
+        name_column = next(
+            (
+                column for column in route.structures.columns
+                if str(column).casefold() == "name"
+            ),
+            None,
+        )
+        if name_column is not None and name_column != structure_name_field:
+            structure_columns.append((name_column, "Name"))
+    sections.append(_markdown_table(
+        route.structures,
+        structure_columns,
+        "No structures found.",
+    ))
+    sections.append("\n")
+    return "\n".join(sections)
 
 
 def _summary_table(summaries):
@@ -264,17 +420,48 @@ def _summary_table(summaries):
             )
         )
 
+    environmental_types = list(dict.fromkeys(
+        feature_type
+        for summary in summaries
+        for feature_type in (summary.get("environmental_type_counts") or {})
+    ))
+    if environmental_types:
+        rows.append("| **Environmental features by type** |" + "".join(" |" for _ in summaries))
+        for feature_type in environmental_types:
+            rows.append(
+                f"| {feature_type} |"
+                + "".join(
+                    " Not available |"
+                    if summary.get("environmental_type_counts") is None
+                    or feature_type not in summary.get("environmental_type_counts", {})
+                    else (
+                        f" {summary['environmental_type_counts'][feature_type]:,} |"
+                    )
+                    for summary in summaries
+                )
+            )
+
+    rows.append(
+        "| Structure count |"
+        + "".join(
+            f" {_format_count(summary.get('structure_count'))} |"
+            for summary in summaries
+        )
+    )
+
     return "\n".join((header, divider, *rows))
 
 def generate_executive_summary():
     """Generate the executive summary section."""
-    summaries = collect_route_summaries(cfg.ROUTES_CONFIG)
+    routes = cfg.ROUTES_CONFIG
+    summaries = collect_route_summaries(routes)
     table = _summary_table(summaries)
     results = (
         "# Analysis Results\n\n"
         "## Executive Summary\n\n"
         "Comparison of summary metrics across route alternatives.\n\n"
         f"{table}\n\n"
+        + "\n".join(_route_detail_sections(route) for route in routes)
     )
     Path(cfg.RESULTS_FILE).write_text(results, encoding="utf-8")
     print(f"Route summary written to {cfg.RESULTS_FILE}")

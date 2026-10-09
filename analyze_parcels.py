@@ -271,7 +271,7 @@ def generate_line_list(route, parcels, owner_client=None, owner_classification_c
         sorted_polygons = intersecting_polygons.sort_values(
             by='entry_distance').reset_index(drop=True)
         sorted_polygons["feet_crossed"] = (sorted_polygons["exit_distance"] - 
-                                           sorted_polygons["entry_distance"])
+                                           sorted_polygons["entry_distance"])*5280
         print(f"Selected {len(sorted_polygons)} parcels for route: {route.name}")
     except Exception as e:
         print(f"Error occurred while processing route {route.name}: {e}")

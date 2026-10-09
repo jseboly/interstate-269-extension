@@ -81,7 +81,7 @@ def main():
                         
                         # Calculate the length in feet for each polygon
                         impacts["length_feet"] = (impacts["end_meas"] - 
-                                                  impacts["start_meas"])
+                                                  impacts["start_meas"])*5280
 
                         # Calculate the area in acres for each polygon
                         route.corridor.load_data()
