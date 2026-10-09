@@ -13,7 +13,7 @@ northwest from Millington, bypasses Meeman-Shelby Forest State Park to the north
 then ties in with Interstate 55 north of Turrell, Arkansas. The "South Option" 
 proceeds southwest from Millington, bypasses Meeman-Shelby Forest State Park to
 the south, and then continues southwest towards West Memphis, Arkansas and ends
-at the I-55 and I-40 interchange.
+at the I-55 and I-40 interchange. Results are written to [Results.md](Results.md).
 
 ## Configuration
 The project configuration is managed entirely within `project_config.py`. All paths, data sources, and analysis parameters are defined as Python data structures. 
