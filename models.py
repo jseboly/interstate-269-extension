@@ -76,9 +76,10 @@ class GISLayer: # A reference to a GIS file with information about its source an
     ) -> gpd.GeoDataFrame:
         """
         Manual fallback for ArcGIS REST Feature Layer /query endpoints.
-        Constructs a REST query with spatial envelope filtering and parses the
-        GeoJSON response directly.
+        Fetches all matching object IDs, then retrieves features in batches to
+        avoid the service's per-query record limit.
         """
+        from collections import deque
         import requests
 
         query_url = url.rstrip('/') + '/query' if not url.endswith('/query') else url
@@ -98,26 +99,100 @@ class GISLayer: # A reference to a GIS file with information about its source an
                 "inSR": self.epsg_code
             })
 
-        response = requests.get(query_url, params=params, timeout=timeout)
-        response.raise_for_status()
-
-        payload = response.json()
-        if not isinstance(payload, dict) or "features" not in payload:
-            raise ValueError(
-                f"ArcGIS query returned an unexpected payload for {url!r}: "
-                f"{payload[:200] if isinstance(payload, str) else payload}"
+        ids_params = {
+            **params,
+            "f": "json",
+            "returnIdsOnly": "true",
+            "returnGeometry": "false",
+        }
+        ids_response = requests.get(query_url, params=ids_params, timeout=timeout)
+        ids_response.raise_for_status()
+        ids_payload = ids_response.json()
+        if (
+            not isinstance(ids_payload, dict)
+            or not isinstance(ids_payload.get("objectIds"), list)
+            or (
+                ids_payload["objectIds"]
+                and not isinstance(ids_payload.get("objectIdFieldName"), str)
             )
+        ):
+            raise ValueError(
+                f"ArcGIS ID query returned an unexpected payload for {url!r}: "
+                f"{ids_payload}"
+            )
+        object_ids = ids_payload["objectIds"]
+        object_id_field = ids_payload.get("objectIdFieldName")
 
         crs = self.epsg_code
-        if isinstance(payload.get("crs"), dict):
-            crs_name = payload["crs"].get("properties", {}).get("name")
-            if isinstance(crs_name, str) and crs_name.upper().startswith("EPSG:"):
-                try:
-                    crs = int(crs_name.split(":", 1)[1])
-                except ValueError:
-                    pass
+        if not object_ids:
+            return gpd.GeoDataFrame(geometry=[], crs=crs)
 
-        return gpd.GeoDataFrame.from_features(payload["features"], crs=crs)
+        batch_size = 1000
+        pending_batches = deque(
+            object_ids[start:start + batch_size]
+            for start in range(0, len(object_ids), batch_size)
+        )
+        features = []
+        object_id_field_key = object_id_field.casefold()
+
+        while pending_batches:
+            batch = pending_batches.popleft()
+            batch_params = {
+                **params,
+                "objectIds": ",".join(str(object_id) for object_id in batch),
+            }
+            response = requests.get(
+                query_url, params=batch_params, timeout=timeout
+            )
+            response.raise_for_status()
+            payload = response.json()
+            if (
+                not isinstance(payload, dict)
+                or not isinstance(payload.get("features"), list)
+            ):
+                raise ValueError(
+                    f"ArcGIS feature query returned an unexpected payload for "
+                    f"{url!r}: {payload}"
+                )
+
+            batch_features = payload["features"]
+            returned_ids = {
+                str(value)
+                for feature in batch_features
+                for key, value in (feature.get("properties") or {}).items()
+                if str(key).casefold() == object_id_field_key and value is not None
+            }
+            requested_ids = {str(object_id) for object_id in batch}
+            has_missing_features = (
+                len(batch_features) != len(batch)
+                or returned_ids != requested_ids
+            )
+            exceeded_limit = payload.get("exceededTransferLimit", False)
+            if exceeded_limit or has_missing_features:
+                if len(batch) == 1:
+                    raise ValueError(
+                        f"ArcGIS feature query could not retrieve object ID "
+                        f"{batch[0]!r} from {url!r}; "
+                        f"exceededTransferLimit={exceeded_limit}."
+                    )
+                midpoint = len(batch) // 2
+                pending_batches.appendleft(batch[midpoint:])
+                pending_batches.appendleft(batch[:midpoint])
+                continue
+
+            if len(features) == 0 and isinstance(payload.get("crs"), dict):
+                crs_name = payload["crs"].get("properties", {}).get("name")
+                if (
+                    isinstance(crs_name, str)
+                    and crs_name.upper().startswith("EPSG:")
+                ):
+                    try:
+                        crs = int(crs_name.split(":", 1)[1])
+                    except ValueError:
+                        pass
+            features.extend(batch_features)
+
+        return gpd.GeoDataFrame.from_features(features, crs=crs)
 
     def unload(self) -> None:
         """Explicitly clear RAM if the data is no longer needed."""

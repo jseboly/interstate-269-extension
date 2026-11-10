@@ -111,7 +111,7 @@ def export_map_data(routes=None, output_path=None):
                     route_slug,
                     "Parcels",
                     "Parcels",
-                    lambda row: row.geometry.intersection(corridor_geometry),
+                    lambda row: row.geometry,
                     lambda row: f"Parcel {_text(row.get('ParcelID'), 'record')}",
                 )
 
