@@ -19,7 +19,7 @@ def main():
                         how='inner', 
                         predicate='intersects'
                     ).copy()
-                route.structures = impacted_structures.drop(columns=['geometry'])
+                route.structures = impacted_structures
                 print(f"{len(impacted_structures)} structures found within the "
                       f"corridor of route {route.name}.")
             except Exception as e:

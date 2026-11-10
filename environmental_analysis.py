@@ -100,7 +100,7 @@ def main():
                     route.env_constraints[layer.description] = impacts.sort_values(
                                     by='start_meas', 
                                     ignore_index=True
-                                    ).drop(columns=['geometry'])
+                                    )
                     print(f"Finished analyzing route {route.name} with "
                           f"environmental layer {layer.name}")
                 except Exception as e:

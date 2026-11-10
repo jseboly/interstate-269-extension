@@ -3,6 +3,7 @@ from analyze_parcels import main as analyze_parcels
 from permit_analysis import main as analyze_permits
 from environmental_analysis import main as analyze_env
 from structure_analysis import main as analyze_structures
+from map_export import export_map_data
 from write_results import main as write_results
 import project_config as cfg
 
@@ -15,6 +16,7 @@ def main():
     analyze_permits()
     analyze_env()
     analyze_structures()
+    export_map_data()
     write_results()
 
 if __name__ == "__main__":

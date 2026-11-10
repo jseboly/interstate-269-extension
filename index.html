@@ -9,6 +9,7 @@
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 	<style>
 		:root {
 			color-scheme: light;
@@ -101,6 +102,16 @@
 		.comparison .major td:first-child { color: var(--forest); }
 		.comparison .major td { font-weight: 700; }
 		.details-section { margin-top: 43px; }
+		.map-panel { margin-top: 18px; border: 1px solid var(--line); background: var(--white); }
+		.map-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 13px 16px; border-bottom: 1px solid var(--line); }
+		.map-panel-header strong { color: var(--forest); font: 600 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+		.map-panel-header span { color: var(--muted); font-size: 11px; }
+		#route-map { min-height: 390px; height: min(58vh, 620px); background: #e6ece7; }
+		.map-message { margin: 0; padding: 13px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+		.data-table tbody tr[data-feature-ids] { cursor: pointer; }
+		.data-table tbody tr[data-feature-ids]:hover td { background: #eaf1e9; }
+		.data-table tbody tr.map-selected td { background: #f5e9c9; }
+		.data-table tbody tr:focus-visible { outline: 2px solid #d5a840; outline-offset: -2px; }
 		.route-controls { display: flex; gap: 6px; padding: 4px; border: 1px solid var(--line); background: #e9ece5; }
 		.route-controls button { min-height: 38px; padding: 0 14px; border: 0; background: transparent; color: #52615b; cursor: pointer; font-size: 13px; font-weight: 700; }
 		.route-controls button[aria-pressed="true"] { background: var(--forest); color: white; }
@@ -213,12 +224,18 @@
 				<p>Summaries stay visible. Open a section to review its feature list; use the search field to narrow long tables.</p>
 			</div>
 			<div id="route-controls" class="route-controls" role="group" aria-label="Select a route"></div>
+			<div class="map-panel">
+				<div class="map-panel-header"><strong>Interactive impact map</strong><span>Select a table row or map feature to focus the impact</span></div>
+				<div id="route-map" role="application" aria-label="Map of route and affected features"></div>
+				<p id="map-message" class="map-message" hidden></p>
+			</div>
 			<div id="route-content" aria-live="polite"><div class="loading">Preparing route details…</div></div>
 		</section>
 	</main>
 
 	<footer class="footer"><div class="footer-inner"><span>Interstate 269 extension · route impact analysis</span><a href="Results.md">View source results</a></div></footer>
 
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 	<script>
 		const stripMarkdown = (value) => value.replace(/^\*\*(.*)\*\*$/, "$1").trim();
 		const splitTableRow = (line) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => stripMarkdown(cell.trim()));
@@ -302,28 +319,153 @@
 		function tableBlock(rows, className = "data-table") {
 			if (!rows || rows.length < 2) return "";
 			const [headers, ...data] = rows;
-			const head = headers.map((cell) => `<th scope="col">${escapeHTML(cell)}</th>`).join("");
-			const body = data.map((row) => `<tr>${headers.map((_, index) => {
+			const mapIdIndex = headers.findIndex((header) => header === "Map ID" || header === "Map IDs");
+			const visibleIndexes = headers.map((_, index) => index).filter((index) => index !== mapIdIndex);
+			const head = visibleIndexes.map((index) => `<th scope="col">${escapeHTML(headers[index])}</th>`).join("");
+			const body = data.map((row) => {
+				const featureIds = mapIdIndex < 0 ? "" : (row[mapIdIndex] || "").split(",").filter(Boolean).join(",");
+				const rowAttributes = featureIds ? ` data-feature-ids="${escapeHTML(featureIds)}" tabindex="0"` : "";
+				return `<tr${rowAttributes}>${visibleIndexes.map((index) => {
 				const value = row[index] || "";
 				const numeric = /^-?[\d,]+(?:\.\d+)?$/.test(value);
 				return `<td${numeric ? ' class="numeric"' : ""}>${escapeHTML(value)}</td>`;
-			}).join("")}</tr>`).join("");
+				}).join("")}</tr>`;
+			}).join("");
 			return `<div class="table-wrap"><table class="${className}"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 		}
 
 		function parcelOwnerRows(parcelRows) {
 			if (!parcelRows || parcelRows.length < 2) return [];
 			const counts = new Map();
+			const ownerIndex = parcelRows[0].indexOf("Owner");
+			const typeIndex = parcelRows[0].indexOf("Owner type");
+			const mapIdIndex = parcelRows[0].indexOf("Map ID");
 			for (const row of parcelRows.slice(1)) {
-				const owner = row[1] || "Owner not listed";
-				const type = row[2] || "Unknown";
+				const owner = row[ownerIndex] || "Owner not listed";
+				const type = row[typeIndex] || "Unknown";
 				const key = `${owner}\u0000${type}`;
-				counts.set(key, (counts.get(key) || 0) + 1);
+				const entry = counts.get(key) || { count: 0, mapIds: [] };
+				entry.count += 1;
+				if (mapIdIndex >= 0 && row[mapIdIndex]) entry.mapIds.push(row[mapIdIndex]);
+				counts.set(key, entry);
 			}
-			return [["Owner", "Owner type", "Parcels affected"], ...Array.from(counts, ([key, count]) => {
+			return [["Owner", "Owner type", "Parcels affected", "Map IDs"], ...Array.from(counts, ([key, entry]) => {
 				const [owner, type] = key.split("\u0000");
-				return [owner, type, String(count)];
+				return [owner, type, String(entry.count), entry.mapIds.join(",")];
 			}).sort((left, right) => left[0].localeCompare(right[0]))];
+		}
+
+		let routeMap = null;
+		let mapFeatureCollection = null;
+		let activeMapLayers = {};
+		let mapLayersById = new Map();
+		let selectedMapIds = [];
+		let layerControl = null;
+
+		function featureStyle(feature, selected = false) {
+			const palette = {
+				Routes: { color: "#183c35", weight: 4, fillOpacity: 0 },
+				Corridors: { color: "#d2a849", weight: 1, fillColor: "#d2a849", fillOpacity: 0.13 },
+				Parcels: { color: "#487c67", weight: 1, fillColor: "#78a68e", fillOpacity: 0.18 },
+				Crossings: { color: "#c85c43", weight: 2, fillColor: "#dc6e4e", fillOpacity: 0.85 },
+				Environment: { color: "#3f8290", weight: 1, fillColor: "#74b9bd", fillOpacity: 0.26 },
+				Structures: { color: "#aa4737", weight: 2, fillColor: "#d16b4b", fillOpacity: 0.85 }
+			};
+			const style = { ...(palette[feature.properties.group] || palette.Environment) };
+			if (selected) Object.assign(style, { color: "#172b27", weight: 4, fillColor: "#f2bd4b", fillOpacity: 0.9 });
+			return style;
+		}
+
+		function revealTableRows(featureIds) {
+			const matches = Array.from(document.querySelectorAll("#route-content tr[data-feature-ids]")).filter((row) => {
+				const rowIds = row.dataset.featureIds.split(",");
+				return featureIds.some((id) => rowIds.includes(id));
+			});
+			document.querySelectorAll("#route-content tr.map-selected").forEach((row) => row.classList.remove("map-selected"));
+			for (const row of matches) {
+				row.hidden = false;
+				row.classList.add("map-selected");
+				const details = row.closest("details");
+				if (details) details.open = true;
+			}
+			if (matches[0]) matches[0].scrollIntoView({ behavior: "smooth", block: "center" });
+		}
+
+		function selectMapFeatures(featureIds, fromMap = false) {
+			const layers = featureIds.map((id) => mapLayersById.get(id)).filter(Boolean);
+			for (const layer of layers) {
+				const groupLayer = activeMapLayers[layer.feature.properties.group];
+				if (routeMap && groupLayer && !routeMap.hasLayer(groupLayer)) routeMap.addLayer(groupLayer);
+			}
+			for (const id of selectedMapIds) {
+				const layer = mapLayersById.get(id);
+				if (layer) layer.setStyle(featureStyle(layer.feature));
+			}
+			selectedMapIds = featureIds;
+			for (const layer of layers) {
+				layer.setStyle(featureStyle(layer.feature, true));
+				if (layer.bringToFront) layer.bringToFront();
+			}
+			document.querySelectorAll("#route-content tr.map-selected").forEach((row) => row.classList.remove("map-selected"));
+			if (!layers.length || !routeMap) return;
+			const bounds = L.featureGroup(layers).getBounds();
+			if (layers.length === 1 && layers[0].getLatLng) routeMap.setView(layers[0].getLatLng(), 15);
+			else if (bounds.isValid()) routeMap.fitBounds(bounds.pad(0.35), { maxZoom: 16 });
+			if (fromMap) revealTableRows(featureIds);
+		}
+
+		function initializeMap(routeName) {
+			const message = document.querySelector("#map-message");
+			if (!window.L || !mapFeatureCollection) {
+				message.textContent = "Map unavailable. Generate map_data.geojson with a full analysis run and check your connection to the map library.";
+				message.hidden = false;
+				return;
+			}
+			if (!routeMap) {
+				routeMap = L.map("route-map", { scrollWheelZoom: false });
+				L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+					maxZoom: 19,
+					attribution: "&copy; OpenStreetMap contributors"
+				}).addTo(routeMap);
+			} else {
+				for (const layer of Object.values(activeMapLayers)) routeMap.removeLayer(layer);
+				if (layerControl) routeMap.removeControl(layerControl);
+			}
+			mapLayersById = new Map();
+			selectedMapIds = [];
+			const definitions = [
+				["Routes", "Routes"],
+				["Corridors", "Corridors"],
+				["Parcels", "Parcels"],
+				["Crossings", "Crossings"],
+				["Environment", "Environmental features"],
+				["Structures", "Structures"]
+			];
+			const overlays = {};
+			activeMapLayers = {};
+			for (const [group, label] of definitions) {
+				const features = mapFeatureCollection.features.filter((feature) => feature.properties.route === routeName && feature.properties.group === group);
+				const layer = L.geoJSON({ type: "FeatureCollection", features }, {
+					style: (feature) => featureStyle(feature),
+					pointToLayer: (feature, latlng) => L.circleMarker(latlng, { ...featureStyle(feature), radius: group === "Crossings" ? 6 : 5 }),
+					onEachFeature: (feature, featureLayer) => {
+						featureLayer.feature = feature;
+						const id = feature.properties.map_id;
+						if (id) mapLayersById.set(id, featureLayer);
+						const labelText = escapeHTML(feature.properties.label || feature.properties.layer || group);
+						featureLayer.bindPopup(`<strong>${labelText}</strong><br>${escapeHTML(feature.properties.layer || group)}`);
+						featureLayer.on("click", () => { if (id) selectMapFeatures([id], true); });
+					}
+				});
+				activeMapLayers[group] = layer;
+				overlays[label] = layer;
+				layer.addTo(routeMap);
+			}
+			layerControl = L.control.layers(null, overlays, { collapsed: window.innerWidth < 700 }).addTo(routeMap);
+			const routeBounds = L.featureGroup([activeMapLayers.Routes, activeMapLayers.Corridors]).getBounds();
+			if (routeBounds.isValid()) routeMap.fitBounds(routeBounds.pad(0.05), { maxZoom: 12 });
+			message.hidden = true;
+			requestAnimationFrame(() => routeMap.invalidateSize());
 		}
 
 		function breakdownHTML(rows) {
@@ -393,12 +535,38 @@
 					});
 				});
 			});
+			document.querySelectorAll("#route-content tr[data-feature-ids]").forEach((row) => {
+				const selectRow = () => selectMapFeatures(row.dataset.featureIds.split(","));
+				row.addEventListener("click", selectRow);
+				row.addEventListener("keydown", (event) => {
+					if (event.key === "Enter" || event.key === " ") {
+						event.preventDefault();
+						selectRow();
+					}
+				});
+			});
 		}
 
 		async function init() {
 			try {
-				const response = await fetch(new URL("Results.md", window.location.href));
+				const [response, mapResponse] = await Promise.all([
+					fetch(new URL("Results.md", window.location.href)),
+					fetch(new URL("map_data.geojson", window.location.href)).catch(() => null)
+				]);
 				if (!response.ok) throw new Error(`Could not load Results.md (${response.status}).`);
+				if (mapResponse && mapResponse.ok) {
+					try {
+						const mapData = await mapResponse.json();
+						if (Array.isArray(mapData.features)) mapFeatureCollection = mapData;
+					} catch {
+						mapFeatureCollection = null;
+					}
+				}
+				if (!mapFeatureCollection) {
+					const message = document.querySelector("#map-message");
+					message.textContent = "Map data not found. Run the full analysis to generate map_data.geojson; the route tables are still available below.";
+					message.hidden = false;
+				}
 				const report = parseReport(await response.text());
 				if (!report.summary || !Object.keys(report.routes).length) throw new Error("The results report does not contain the expected summary and route sections.");
 				const summaryRows = report.summary;
@@ -409,6 +577,13 @@
 				const selectRoute = (name) => {
 					const routeIndex = routeNames.indexOf(name) + 1;
 					renderRoute(name, report.routes[name], routeSummary(summaryRows, routeIndex), routeIndex);
+					try {
+						initializeMap(name);
+					} catch {
+						const message = document.querySelector("#map-message");
+						message.textContent = "The interactive map could not be initialized. The route tables remain available.";
+						message.hidden = false;
+					}
 					controls.querySelectorAll("button").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.route === name)));
 				};
 				controls.addEventListener("click", (event) => {

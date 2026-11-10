@@ -41,7 +41,7 @@ def main():
                     crossings = crossings.sort_values(
                         by='Measure', 
                         ignore_index=True
-                        ).drop(columns=['geometry'])
+                    )
                     route.permits[layer.description] = crossings
                     print(f"Found {len(crossings)} permit crossings for layer "
                           f"{layer.name} on route {route.name}.")

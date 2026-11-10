@@ -248,6 +248,7 @@ def _route_detail_sections(route):
         )
 
     parcel_columns = (
+        ("MapID", "Map ID"),
         ("ParcelID", "Parcel ID"),
         ("Owner", "Owner"),
         ("OwnerType", "Owner type"),
@@ -273,6 +274,7 @@ def _route_detail_sections(route):
     sections.append(_markdown_table(
         permits if route.permits is not None else None,
         (
+            ("MapID", "Map ID"),
             ("Type", "Type"),
             ("UniqueID", "ID"),
             ("Name", "Name"),
@@ -285,6 +287,7 @@ def _route_detail_sections(route):
     sections.append(_markdown_table(
         environmental if route.env_constraints is not None else None,
         (
+            ("MapID", "Map ID"),
             ("Type", "Type"),
             ("UniqueID", "ID"),
             ("Name", "Name"),
@@ -302,6 +305,7 @@ def _route_detail_sections(route):
     structure_name_field = structure_source.name_field
     structure_id_field = structure_source.id_field
     if route.structures is not None:
+        structure_columns.append(("MapID", "Map ID"))
         structure_columns.append((structure_id_field, "ID"))
         if structure_name_field:
             structure_columns.append(
