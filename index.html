@@ -343,19 +343,17 @@
 			const counts = new Map();
 			const ownerIndex = parcelRows[0].indexOf("Owner");
 			const typeIndex = parcelRows[0].indexOf("Owner type");
-			const mapIdIndex = parcelRows[0].indexOf("Map ID");
 			for (const row of parcelRows.slice(1)) {
 				const owner = row[ownerIndex] || "Owner not listed";
 				const type = row[typeIndex] || "Unknown";
 				const key = `${owner}\u0000${type}`;
-				const entry = counts.get(key) || { count: 0, mapIds: [] };
+				const entry = counts.get(key) || { count: 0 };
 				entry.count += 1;
-				if (mapIdIndex >= 0 && row[mapIdIndex]) entry.mapIds.push(row[mapIdIndex]);
 				counts.set(key, entry);
 			}
-			return [["Owner", "Owner type", "Parcels affected", "Map IDs"], ...Array.from(counts, ([key, entry]) => {
+			return [["Owner", "Owner type", "Parcels affected"], ...Array.from(counts, ([key, entry]) => {
 				const [owner, type] = key.split("\u0000");
-				return [owner, type, String(entry.count), entry.mapIds.join(",")];
+				return [owner, type, String(entry.count)];
 			}).sort((left, right) => left[0].localeCompare(right[0]))];
 		}
 
@@ -389,6 +387,11 @@
 				: { ...(palette[feature.properties.group] || defaultEnvironmentStyle) };
 			if (selected) Object.assign(style, { color: "#172b27", weight: 4, fillColor: "#f2bd4b", fillOpacity: 0.9 });
 			return style;
+		}
+
+		function featureLayerKey(properties) {
+			if (properties.group !== "Environment") return properties.group;
+			return `Environment:${properties.feature_type || "Other"}`;
 		}
 
 		function addEnvironmentLegend(features) {
@@ -438,7 +441,7 @@
 		function selectMapFeatures(featureIds, fromMap = false) {
 			const layers = featureIds.map((id) => mapLayersById.get(id)).filter(Boolean);
 			for (const layer of layers) {
-				const groupLayer = activeMapLayers[layer.feature.properties.group];
+				const groupLayer = activeMapLayers[featureLayerKey(layer.feature.properties)];
 				if (routeMap && groupLayer && !routeMap.hasLayer(groupLayer)) routeMap.addLayer(groupLayer);
 			}
 			for (const id of selectedMapIds) {
@@ -478,19 +481,37 @@
 			}
 			mapLayersById = new Map();
 			selectedMapIds = [];
+			const routeFeatures = mapFeatureCollection.features.filter((feature) => feature.properties.route === routeName);
 			const definitions = [
-				["Routes", "Routes"],
-				["Corridors", "Corridors"],
-				["Parcels", "Parcels"],
-				["Crossings", "Crossings"],
-				["Environment", "Environmental features"],
-				["Structures", "Structures"]
-			];
+				["Routes", "Routes", "Routes"],
+				["Corridors", "Corridors", "Corridors"],
+				["Parcels", "Parcels", "Parcels"],
+				["Crossings", "Crossings", "Crossings"],
+				["Structures", "Structures", "Structures"]
+			].map(([key, label, group]) => ({
+				key,
+				label,
+				group,
+				features: routeFeatures.filter((feature) => feature.properties.group === group)
+			}));
+			const environmentalFeatures = routeFeatures.filter((feature) => feature.properties.group === "Environment");
+			const environmentalTypes = [...new Set(
+				environmentalFeatures.map((feature) => feature.properties.feature_type || "Other")
+			)].sort();
+			for (const type of environmentalTypes) {
+				definitions.push({
+					key: `Environment:${type}`,
+					label: `Environmental: ${type}`,
+					group: "Environment",
+					features: environmentalFeatures.filter(
+						(feature) => (feature.properties.feature_type || "Other") === type
+					)
+				});
+			}
 			const overlays = {};
 			activeMapLayers = {};
-			for (const [group, label] of definitions) {
-				const features = mapFeatureCollection.features.filter((feature) => feature.properties.route === routeName && feature.properties.group === group);
-				if (group === "Environment") addEnvironmentLegend(features);
+			if (environmentalFeatures.length) addEnvironmentLegend(environmentalFeatures);
+			for (const { key, label, group, features } of definitions) {
 				const layer = L.geoJSON({ type: "FeatureCollection", features }, {
 					style: (feature) => featureStyle(feature),
 					pointToLayer: (feature, latlng) => L.circleMarker(latlng, { ...featureStyle(feature), radius: group === "Crossings" ? 6 : 5 }),
@@ -503,7 +524,7 @@
 						featureLayer.on("click", () => { if (id) selectMapFeatures([id], true); });
 					}
 				});
-				activeMapLayers[group] = layer;
+				activeMapLayers[key] = layer;
 				overlays[label] = layer;
 				layer.addTo(routeMap);
 			}
