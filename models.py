@@ -135,16 +135,45 @@ class GISLayer: # A reference to a GIS file with information about its source an
         features = []
         object_id_field_key = object_id_field.casefold()
 
+        def split_batch(batch):
+            midpoint = len(batch) // 2
+            pending_batches.appendleft(batch[midpoint:])
+            pending_batches.appendleft(batch[:midpoint])
+
         while pending_batches:
             batch = pending_batches.popleft()
             batch_params = {
                 **params,
                 "objectIds": ",".join(str(object_id) for object_id in batch),
             }
-            response = requests.get(
-                query_url, params=batch_params, timeout=timeout
+            response = requests.post(
+                query_url, data=batch_params, timeout=timeout
             )
-            response.raise_for_status()
+            try:
+                response.raise_for_status()
+            except requests.exceptions.HTTPError as error:
+                error_response = error.response
+                status_code = (
+                    error_response.status_code if error_response is not None else None
+                )
+                response_text = (
+                    error_response.text.casefold()
+                    if error_response is not None
+                    else ""
+                )
+                is_batch_size_error = status_code in (413, 414) or (
+                    status_code == 400
+                    and "objectid" in response_text
+                    and any(
+                        marker in response_text
+                        for marker in ("maximum", "exceed", "too many", "limit", "large")
+                    )
+                )
+                if not is_batch_size_error or len(batch) == 1:
+                    raise
+                split_batch(batch)
+                continue
+
             payload = response.json()
             if (
                 not isinstance(payload, dict)
@@ -175,9 +204,7 @@ class GISLayer: # A reference to a GIS file with information about its source an
                         f"{batch[0]!r} from {url!r}; "
                         f"exceededTransferLimit={exceeded_limit}."
                     )
-                midpoint = len(batch) // 2
-                pending_batches.appendleft(batch[midpoint:])
-                pending_batches.appendleft(batch[:midpoint])
+                split_batch(batch)
                 continue
 
             if len(features) == 0 and isinstance(payload.get("crs"), dict):

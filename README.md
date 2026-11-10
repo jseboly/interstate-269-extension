@@ -61,7 +61,7 @@ When all configuration settings are ready, run `orchestrator.py` to perform the 
 
 The writer-only option requires a cache created by a full analysis run. The cache contains only the values needed for the route comparison table, not the underlying GIS data or detailed analysis outputs.
 
-A full analysis run also writes `map_data.geojson` for the interactive map on the GitHub Pages report. Publish it beside `index.html` and `Results.md`. The writer-only option does not regenerate map geometry; rerun the full analysis when routes or source features change.
+A full analysis run also writes `map_data.geojson` for the interactive map on the GitHub Pages report. Environmental features that intersect a route are shown with their full source geometry and colored by feature type. Publish the file beside `index.html` and `Results.md`. The writer-only option does not regenerate map geometry; rerun the full analysis when routes or source features change.
 
 ## Provided Results
 Here is a description of the results that this tool can calculate for you.

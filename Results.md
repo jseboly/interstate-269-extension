@@ -8,33 +8,34 @@ Comparison of summary metrics across route alternatives.
 |:--|--:|--:|
 | **Total length (mi)** | **21.22** | **20.53** |
 | **Total area (acres)** | **771.48** | **746.66** |
-| **Landowners by type** | **38** | **61** |
+| **Landowners by type** | **40** | **84** |
 | Local Government | 0 | 3 |
 | Nonprofit | 0 | 1 |
+| Not Classified | 2 | 23 |
 | Private Business | 5 | 7 |
 | Private Individual | 32 | 49 |
 | State | 0 | 1 |
 | Unknown | 1 | 0 |
-| **Parcels by type** | **44** | **75** |
+| **Parcels by type** | **46** | **113** |
 | Local Government | 0 | 3 |
 | Nonprofit | 0 | 1 |
+| Not Classified | 2 | 38 |
 | Private Business | 6 | 8 |
 | Private Individual | 37 | 61 |
 | State | 0 | 2 |
 | Unknown | 1 | 0 |
-| **Permits by type** | **2** | **12** |
+| **Permits by type** | **8** | **25** |
 | Interstate Highway | 0 | 1 |
 | US Highway | 0 | 1 |
 | State Highway | 0 | 4 |
-| Local Road | 1 | 3 |
+| Local Road | 7 | 16 |
 | Railroad | 1 | 3 |
 | **Environmental features by type** | | |
-| Wetland | 9 | 10 |
 | Waterbody | 3 | 5 |
 | Stream | 15 | 23 |
 | Flood Zone | 22 | 32 |
 | Protected Area | 0 | 5 |
-| Structure count | 0 | 3 |
+| Structure count | 11 | 43 |
 
 ## North Option Details
 
@@ -74,25 +75,33 @@ Comparison of summary metrics across route alternatives.
 | north-option-parcels-0030 | D0103   00024 | TAYLOR DONALD K JR AND CHRISTOPHER B | Private Individual | 6.53 | 7.48 | 5,022.00 | 312.97 | 34.59 |
 | north-option-parcels-0031 | D0103   00025 | TAYLOR DONALD K JR AND CHRISTOPHER B | Private Individual | 7.48 | 7.77 | 1,496.82 | 111.79 | 10.31 |
 | north-option-parcels-0032 | D0103   00001 | TAYLOR DONALD K JR AND CHRISTOPHER B | Private Individual | 7.77 | 8.77 | 5,318.57 | 323.34 | 36.63 |
-| north-option-parcels-0033 | D0103   00144 | BERBERICK JOSHUA | Private Individual |  |  |  | 31.58 | 0.19 |
-| north-option-parcels-0034 | D0103   00203 | MAXEY JEFFREY W AND DAWN M NABORS (RS) | Private Individual |  |  |  | 4.12 | 0.31 |
-| north-option-parcels-0035 | D0113   00531 | WILDER CASEY D & HEIDI | Private Individual |  |  |  | 16.90 | 0.22 |
-| north-option-parcels-0036 | D0114   00126 | SOMERVILLE MICHAEL C | Private Individual |  |  |  | 5.00 | 0.01 |
-| north-option-parcels-0037 | D0114   00198C | SHANDS DEBRA T | Private Individual |  |  |  | 7.82 | 0.04 |
-| north-option-parcels-0038 | D0114   00202 | COLEMAN JOHNNY T | Private Individual |  |  |  | 3.99 | 0.01 |
-| north-option-parcels-0039 | D0114   00210 | SCHAAF RANDAL A & JULIE A | Private Individual |  |  |  | 4.13 | 0.07 |
-| north-option-parcels-0040 | D0114   00287C | LOVE LEE R | Private Individual |  |  |  | 7.16 | 0.13 |
-| north-option-parcels-0041 | D0114   00291 | LOVE LEE R | Private Individual |  |  |  | 5.95 | 0.23 |
-| north-option-parcels-0042 | D0114   00356 | SANDERS SUSAN C AND TAMARA L BRAITHWAITE | Private Individual |  |  |  | 3.85 | 0.00 |
-| north-option-parcels-0043 | D0114   00450 | ERVIN PERCY O AND WESLEY D ERVIN (RS) | Private Individual |  |  |  | 4.99 | 0.02 |
-| north-option-parcels-0044 | D0114   00451 | LUCE GARY L & EVELYN E (RS) | Private Individual |  |  |  | 5.01 | 0.92 |
+| north-option-parcels-0033 | 157-00008-000 | DEAN'S ISLAND LAND CO INC | Not Classified | 9.89 | 9.93 | 174.83 | 11.47 | 1.20 |
+| north-option-parcels-0034 | 106075000100 | CENTENNIAL FARMS LLC | Not Classified | 15.23 | 17.51 | 12,036.93 | 5,022.06 | 82.88 |
+| north-option-parcels-0035 | D0103   00144 | BERBERICK JOSHUA | Private Individual |  |  |  | 31.58 | 0.19 |
+| north-option-parcels-0036 | D0103   00203 | MAXEY JEFFREY W AND DAWN M NABORS (RS) | Private Individual |  |  |  | 4.12 | 0.31 |
+| north-option-parcels-0037 | D0113   00531 | WILDER CASEY D & HEIDI | Private Individual |  |  |  | 16.90 | 0.22 |
+| north-option-parcels-0038 | D0114   00126 | SOMERVILLE MICHAEL C | Private Individual |  |  |  | 5.00 | 0.01 |
+| north-option-parcels-0039 | D0114   00198C | SHANDS DEBRA T | Private Individual |  |  |  | 7.82 | 0.04 |
+| north-option-parcels-0040 | D0114   00202 | COLEMAN JOHNNY T | Private Individual |  |  |  | 3.99 | 0.01 |
+| north-option-parcels-0041 | D0114   00210 | SCHAAF RANDAL A & JULIE A | Private Individual |  |  |  | 4.13 | 0.07 |
+| north-option-parcels-0042 | D0114   00287C | LOVE LEE R | Private Individual |  |  |  | 7.16 | 0.13 |
+| north-option-parcels-0043 | D0114   00291 | LOVE LEE R | Private Individual |  |  |  | 5.95 | 0.23 |
+| north-option-parcels-0044 | D0114   00356 | SANDERS SUSAN C AND TAMARA L BRAITHWAITE | Private Individual |  |  |  | 3.85 | 0.00 |
+| north-option-parcels-0045 | D0114   00450 | ERVIN PERCY O AND WESLEY D ERVIN (RS) | Private Individual |  |  |  | 4.99 | 0.02 |
+| north-option-parcels-0046 | D0114   00451 | LUCE GARY L & EVELYN E (RS) | Private Individual |  |  |  | 5.01 | 0.92 |
 
 
 ### Permit Crossing List
 
 | Map ID | Type | ID | Name | Milepost |
 | --- | --- | --- | --- | --- |
-| north-option-local-road-0001 | Local Road | d9eff187-e1b6-4381-83f1-818a2d1e76aa |  | 6.61 |
+| north-option-local-road-0001 | Local Road | 80441c47-2bcc-48d5-8745-3531509f5b2f | Epperson Mill Rd | 1.05 |
+| north-option-local-road-0002 | Local Road | f65a0b98-7d0a-4fd8-b823-68b7504a7ef8 | Shake Rag Rd | 2.11 |
+| north-option-local-road-0003 | Local Road | e6ce8cb9-eaa1-422e-a2b4-e62913ebe750 | Rankin Branch Rd | 3.35 |
+| north-option-local-road-0004 | Local Road | 95bf710a-02cd-4b0d-b491-b786783fec72 | Cuba Millington Rd | 3.87 |
+| north-option-local-road-0005 | Local Road | f3ecc448-68b7-4c0e-bb57-8577d7fd0cba | Herring Hill Rd | 4.77 |
+| north-option-local-road-0006 | Local Road | 52d47166-8495-4306-829e-474364cf50bc | River Bluff Rd | 6.31 |
+| north-option-local-road-0007 | Local Road | d9eff187-e1b6-4381-83f1-818a2d1e76aa |  | 6.61 |
 | north-option-railroad-0001 | Railroad | ca0bffc4-bf04-4586-b62e-84d6c853be2a | BNSF Railway Company | 20.46 |
 
 
@@ -100,18 +109,9 @@ Comparison of summary metrics across route alternatives.
 
 | Map ID | Type | ID | Name | Start milepost | End milepost | Length affected (ft) | Area affected (acres) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| north-option-wetland-0001 | Wetland | 16894912 | Riverine | 1.27 | 1.28 | 74.43 | 0.07 |
-| north-option-wetland-0002 | Wetland | 22899856 | Riverine | 1.83 | 1.85 | 95.76 | 0.79 |
-| north-option-wetland-0003 | Wetland | 10999142 | Freshwater Forested/Shrub Wetland | 3.92 | 3.92 | 20.76 | 0.23 |
-| north-option-wetland-0004 | Wetland | 22928578 | Riverine | 6.05 | 6.06 | 52.68 | 0.45 |
-| north-option-wetland-0005 | Wetland | 16270394 | Freshwater Forested/Shrub Wetland | 8.65 | 8.90 | 1,356.56 | 3.56 |
-| north-option-wetland-0006 | Wetland | 16268931 | Freshwater Forested/Shrub Wetland | 10.23 | 10.33 | 542.73 | 3.71 |
-| north-option-wetland-0007 | Wetland | 16270342 | Freshwater Forested/Shrub Wetland | 10.33 | 10.43 | 500.55 | 3.45 |
-| north-option-wetland-0008 | Wetland | 16267961 | Riverine | 17.46 | 17.52 | 307.77 | 2.23 |
-| north-option-wetland-0009 | Wetland | 16267969 | Freshwater Forested/Shrub Wetland | 17.56 | 17.63 | 414.47 | 2.97 |
 | north-option-waterbody-0001 | Waterbody | 461759 |  | 8.92 | 10.23 | 6,911.02 | 31.52 |
-| north-option-waterbody-0002 | Waterbody | 462477 |  | 8.92 | 10.23 | 6,911.02 | 31.52 |
-| north-option-waterbody-0003 | Waterbody | 462464 |  | 8.92 | 10.23 | 6,911.02 | 31.52 |
+| north-option-waterbody-0002 | Waterbody | 462464 |  | 8.92 | 10.23 | 6,911.02 | 31.52 |
+| north-option-waterbody-0003 | Waterbody | 462477 |  | 8.92 | 10.23 | 6,911.02 | 31.52 |
 | north-option-stream-0001 | Stream |  |  | 0.55 |  |  |  |
 | north-option-stream-0002 | Stream | 1277276 | Big Creek | 1.84 |  |  |  |
 | north-option-stream-0003 | Stream | 1269684 | Jakes Creek | 2.16 |  |  |  |
@@ -153,7 +153,19 @@ Comparison of summary metrics across route alternatives.
 
 ### Structures
 
-No structures found.
+| Map ID | ID | Type |
+| --- | --- | --- |
+| north-option-structures-0001 | 51637185 | Single Family Dwelling |
+| north-option-structures-0002 | 51857295 | Single Family Dwelling |
+| north-option-structures-0003 | 51859286 | Single Family Dwelling |
+| north-option-structures-0004 | 51857271 | Single Family Dwelling |
+| north-option-structures-0005 | 51857235 | Single Family Dwelling |
+| north-option-structures-0006 | 51859080 | Single Family Dwelling |
+| north-option-structures-0007 | 51857288 | Single Family Dwelling |
+| north-option-structures-0008 | 51859060 | Single Family Dwelling |
+| north-option-structures-0009 | 51857319 | Unclassified |
+| north-option-structures-0010 | 51853020 | Unclassified |
+| north-option-structures-0011 | 51859304 | Single Family Dwelling |
 
 
 ## South Option Details
@@ -221,22 +233,60 @@ No structures found.
 | south-option-parcels-0057 | D0154   00036 | ASH SLOUGH LLC | Private Business | 11.92 | 12.25 | 1,766.50 | 128.47 | 12.09 |
 | south-option-parcels-0058 | D0154   00037 | FULLEN DOCK & WAREHOUSE INC. | Private Business | 12.33 | 12.60 | 1,413.72 | 49.68 | 9.94 |
 | south-option-parcels-0059 | D0153   00014 | GREGORY ROBINSON LIVING TRUST AND | Private Individual | 13.99 | 14.46 | 2,480.89 | 429.79 | 17.09 |
-| south-option-parcels-0060 | D0153   00015 | ROBINSON GILBERT A AND ELIZABETH R | Private Individual | 14.46 | 16.07 | 8,479.60 | 1,370.24 | 58.38 |
-| south-option-parcels-0061 | D0124   00337 | WILDER T KEITH | Private Individual |  |  |  | 5.23 | 0.35 |
-| south-option-parcels-0062 | D0124   00604 | STEVENS F DAVID III AND RACHEL BALDAUF | Private Individual |  |  |  | 6.18 | 0.00 |
-| south-option-parcels-0063 | D0124   00652 | MILLER JOHNNY & LEOLA | Private Individual |  |  |  | 3.85 | 0.06 |
-| south-option-parcels-0064 | D0134   00617 | PECK JERRY S AND SCOTT W PECK | Private Individual |  |  |  | 84.06 | 0.68 |
-| south-option-parcels-0065 | D0135   00221 | WILKERSON WILLIAM H | Private Individual |  |  |  | 24.88 | 0.01 |
-| south-option-parcels-0066 | D0135   00378 | BAILEY ELIZABETH C | Private Individual |  |  |  | 5.90 | 0.08 |
-| south-option-parcels-0067 | D0135   00379 | DANIELS HOWARD A REVOCABLE TRUST | Private Individual |  |  |  | 1.16 | 0.36 |
-| south-option-parcels-0068 | D0135   00469 | STATE OF TENNESSEE | State |  |  |  | 2.19 | 0.73 |
-| south-option-parcels-0069 | D0135   00523 | HOUSTON LEVEE EAST LLC | Private Business |  |  |  | 4.79 | 0.03 |
-| south-option-parcels-0070 | D0135   00530 | HARRIS WILLIE J | Private Individual |  |  |  | 14.63 | 0.11 |
-| south-option-parcels-0071 | D0144   00019 | CITY OF MEMPHIS M G & L DIV | Local Government |  |  |  | 33.86 | 2.20 |
-| south-option-parcels-0072 | D0144   00121 | PECK SCOTT W LIVING TRUST | Private Individual |  |  |  | 27.40 | 0.17 |
-| south-option-parcels-0073 | D0144   00172 | SANDERS ERNEST AUBRY & BETTY JANE | Private Individual |  |  |  | 14.78 | 0.38 |
-| south-option-parcels-0074 | D0144   00243 | HINKSON ANGELA | Private Individual |  |  |  | 0.54 | 0.06 |
-| south-option-parcels-0075 | D0144   00245 | HINKSON CHARLES G JR & ANGELA G | Private Individual |  |  |  | 0.57 | 0.26 |
+| south-option-parcels-0060 | 105855000000 | ROBINSON GILBERT A IV ET AL | Not Classified | 14.02 | 14.26 | 1,303.74 | 140.39 | 8.85 |
+| south-option-parcels-0061 | 105856000000 | ROBINSON GILBERT A IV ET AL | Not Classified | 14.26 | 14.63 | 1,957.18 | 351.40 | 13.48 |
+| south-option-parcels-0062 | D0153   00015 | ROBINSON GILBERT A AND ELIZABETH R | Private Individual | 14.46 | 16.07 | 8,479.60 | 1,370.24 | 58.38 |
+| south-option-parcels-0063 | 105857000000 | ROBINSON G A III-TR ET AL | Not Classified | 14.63 | 15.27 | 3,380.51 | 172.27 | 23.28 |
+| south-option-parcels-0064 | 105862000000 | PORTER FAMILY PARTNERS LLC ET AL | Not Classified | 16.19 | 16.33 | 703.44 | 31.79 | 4.85 |
+| south-option-parcels-0065 | 105861010000 | PORTER FAMILY PARTNERS LLC ET AL | Not Classified | 16.33 | 16.41 | 440.46 | 54.45 | 3.03 |
+| south-option-parcels-0066 | 105986000000 | PORTER FAMILY PARTNERS LLC ET AL | Not Classified | 16.41 | 16.46 | 267.62 | 21.22 | 1.97 |
+| south-option-parcels-0067 | 398000200000 | WOOTEN JOHN KELLY IV | Not Classified | 16.46 | 16.47 | 62.60 | 1.28 | 0.61 |
+| south-option-parcels-0068 | 105985016000 | MOUND CITY LEVEE INVESTMENTS LLC | Not Classified | 16.47 | 16.53 | 321.41 | 2.24 | 1.52 |
+| south-option-parcels-0069 | 353570000000 | L & E PROPERTIES LLC | Not Classified | 16.53 | 16.58 | 251.12 | 1.73 | 1.59 |
+| south-option-parcels-0070 | 398000000000 | L & E PROPERTIES LLC | Not Classified | 16.58 | 16.61 | 139.27 | 7.19 | 0.97 |
+| south-option-parcels-0071 | 397104000000 | LOWRANCE SERVICES LLC | Not Classified | 16.61 | 17.01 | 2,152.62 | 190.12 | 14.83 |
+| south-option-parcels-0072 | 239069800100 | PIRANI DENNIS J TRUST | Not Classified | 17.01 | 17.23 | 1,139.41 | 106.30 | 7.89 |
+| south-option-parcels-0073 | 239069800000 | NEWQUEEN VILLA INC | Not Classified | 17.23 | 17.51 | 1,501.37 | 106.66 | 10.31 |
+| south-option-parcels-0074 | 239069300000 | NEWQUEEN VILLA INC | Not Classified | 17.51 | 17.85 | 1,789.14 | 148.14 | 12.32 |
+| south-option-parcels-0075 | 239069700000 | NEWQUEEN VILLA INC | Not Classified | 17.85 | 17.96 | 544.37 | 59.52 | 3.75 |
+| south-option-parcels-0076 | 239069600100 | ARGREEN INC | Not Classified | 17.96 | 18.02 | 365.43 | 107.02 | 2.52 |
+| south-option-parcels-0077 | 239069100000 | ARGREEN INC | Not Classified | 18.02 | 18.09 | 331.36 | 5.61 | 2.29 |
+| south-option-parcels-0078 | 239069000000 | ARGREEN INC | Not Classified | 18.09 | 18.48 | 2,090.10 | 87.70 | 14.38 |
+| south-option-parcels-0079 | 239069200000 | ARGREEN INC | Not Classified | 18.48 | 18.59 | 552.61 | 21.45 | 3.81 |
+| south-option-parcels-0080 | 397102000000 | ARGREEN INC | Not Classified | 18.84 | 19.01 | 902.51 | 63.89 | 6.22 |
+| south-option-parcels-0081 | 397040000000 | ARGREEN INC | Not Classified | 19.01 | 19.54 | 2,794.45 | 82.65 | 19.25 |
+| south-option-parcels-0082 | 397000000000 | FIRST ASSEMBLY OF GOD OF WMPHS | Not Classified | 19.54 | 19.67 | 678.92 | 65.03 | 4.36 |
+| south-option-parcels-0083 | 395351100000 | FIRST ASSEMBLY OF GOD OF WMPHS I | Not Classified | 19.67 | 19.68 | 56.28 | 2.66 | 0.70 |
+| south-option-parcels-0084 | 395358000000 | TAYLOR L JR ETAL | Not Classified | 19.73 | 19.90 | 874.22 | 131.23 | 6.02 |
+| south-option-parcels-0085 | 395351000000 | TAYLOR L JR ETAL | Not Classified | 19.91 | 20.02 | 578.50 | 118.28 | 4.14 |
+| south-option-parcels-0086 | 395352000000 | GARROTT REALTY INC | Not Classified | 20.02 | 20.05 | 143.27 | 0.69 | 0.66 |
+| south-option-parcels-0087 | 395352000010 | AR STATE HWY COM | Not Classified | 20.05 | 20.06 | 56.24 | 0.35 | 0.35 |
+| south-option-parcels-0088 | 393930000100 | ARKANSAS STATE HIGHWAY COMMISSION | Not Classified | 20.08 | 20.09 | 52.84 | 0.33 | 0.33 |
+| south-option-parcels-0089 | 393930000000 | TDC AUTOMOTIVE LLC | Not Classified | 20.09 | 20.13 | 203.97 | 1.42 | 1.23 |
+| south-option-parcels-0090 | 393960000000 | RAZORBACK CONCRETE COMPANY | Not Classified | 20.16 | 20.34 | 943.86 | 33.72 | 6.50 |
+| south-option-parcels-0091 | 393950000000 | CRITTENDEN COUNTY | Not Classified | 20.34 | 20.48 | 766.43 | 37.40 | 5.25 |
+| south-option-parcels-0092 | D0124   00337 | WILDER T KEITH | Private Individual |  |  |  | 5.23 | 0.35 |
+| south-option-parcels-0093 | D0124   00604 | STEVENS F DAVID III AND RACHEL BALDAUF | Private Individual |  |  |  | 6.18 | 0.00 |
+| south-option-parcels-0094 | D0124   00652 | MILLER JOHNNY & LEOLA | Private Individual |  |  |  | 3.85 | 0.06 |
+| south-option-parcels-0095 | D0134   00617 | PECK JERRY S AND SCOTT W PECK | Private Individual |  |  |  | 84.06 | 0.68 |
+| south-option-parcels-0096 | D0135   00221 | WILKERSON WILLIAM H | Private Individual |  |  |  | 24.88 | 0.01 |
+| south-option-parcels-0097 | D0135   00378 | BAILEY ELIZABETH C | Private Individual |  |  |  | 5.90 | 0.08 |
+| south-option-parcels-0098 | D0135   00379 | DANIELS HOWARD A REVOCABLE TRUST | Private Individual |  |  |  | 1.16 | 0.36 |
+| south-option-parcels-0099 | D0135   00469 | STATE OF TENNESSEE | State |  |  |  | 2.19 | 0.73 |
+| south-option-parcels-0100 | D0135   00523 | HOUSTON LEVEE EAST LLC | Private Business |  |  |  | 4.79 | 0.03 |
+| south-option-parcels-0101 | D0135   00530 | HARRIS WILLIE J | Private Individual |  |  |  | 14.63 | 0.11 |
+| south-option-parcels-0102 | D0144   00019 | CITY OF MEMPHIS M G & L DIV | Local Government |  |  |  | 33.86 | 2.20 |
+| south-option-parcels-0103 | D0144   00121 | PECK SCOTT W LIVING TRUST | Private Individual |  |  |  | 27.40 | 0.17 |
+| south-option-parcels-0104 | D0144   00172 | SANDERS ERNEST AUBRY & BETTY JANE | Private Individual |  |  |  | 14.78 | 0.38 |
+| south-option-parcels-0105 | D0144   00243 | HINKSON ANGELA | Private Individual |  |  |  | 0.54 | 0.06 |
+| south-option-parcels-0106 | D0144   00245 | HINKSON CHARLES G JR & ANGELA G | Private Individual |  |  |  | 0.57 | 0.26 |
+| south-option-parcels-0107 | 395351050000 | WEST MEMPHIS CITY OF | Not Classified |  |  |  | 0.20 | 0.20 |
+| south-option-parcels-0108 | 398000300000 | ATM OIL COMPANY INC | Not Classified |  |  |  | 1.57 | 0.34 |
+| south-option-parcels-0109 | 388059000000 | WELSCO INC | Not Classified |  |  |  | 1.18 | 0.01 |
+| south-option-parcels-0110 | 393920000000 | TDC AUTOMOTIVE LLC | Not Classified |  |  |  | 0.32 | 0.17 |
+| south-option-parcels-0111 | 393920000100 | AR STATE HWY COMM | Not Classified |  |  |  | 0.20 | 0.02 |
+| south-option-parcels-0112 | 388059000050 | AR STATE HWY COMM | Not Classified |  |  |  | 0.06 | 0.01 |
+| south-option-parcels-0113 | 395351050010 | AR STATE HWY COMM | Not Classified |  |  |  | 0.06 | 0.06 |
 
 
 ### Permit Crossing List
@@ -249,9 +299,22 @@ No structures found.
 | south-option-state-highway-0002 | State Highway | 2558e332-1624-4af3-ba2f-61bf6206ab35 | N Watkins St | 8.78 |
 | south-option-state-highway-0003 | State Highway | 6983af8a-cce9-4ea1-ade1-78ef5a3ead8c | N 7th St | 19.91 |
 | south-option-state-highway-0004 | State Highway | b10df069-760c-4925-8817-610bb6ac8651 | State Hwy 77 | 20.07 |
-| south-option-local-road-0001 | Local Road | 5e8d9d3b-e6f2-4f4e-9fdd-523baa83b888 | Little John Rd | 4.29 |
-| south-option-local-road-0002 | Local Road | 80bb0df3-732c-40c3-9d67-7ec758a7cd4c | Northaven Dr | 8.79 |
-| south-option-local-road-0003 | Local Road | 94e1fa41-0665-4bba-90f9-56c14877b3a2 | Dacus Rd | 16.46 |
+| south-option-local-road-0001 | Local Road | 80441c47-2bcc-48d5-8745-3531509f5b2f | Epperson Mill Rd | 1.06 |
+| south-option-local-road-0002 | Local Road | 997c3c28-ccbc-401f-a286-787db7e7dfe2 | Ward Rd | 3.41 |
+| south-option-local-road-0003 | Local Road | 5e8d9d3b-e6f2-4f4e-9fdd-523baa83b888 | Little John Rd | 4.29 |
+| south-option-local-road-0004 | Local Road | 4803f732-d911-49a5-96c0-091dda2525f7 | Woodstock Cuba Rd | 4.89 |
+| south-option-local-road-0005 | Local Road | 24d319f5-78b9-43c3-a085-0a0fcf123add |  | 4.91 |
+| south-option-local-road-0006 | Local Road | 67c859bc-3b03-45cd-8440-dab350ce84f8 | Locke Rd | 4.92 |
+| south-option-local-road-0007 | Local Road | 4536c0f5-f6c4-4384-90a5-1878955c8e73 | Fite Rd | 7.01 |
+| south-option-local-road-0008 | Local Road | 2c116c5d-5bf6-4ae9-a9d7-65ff01664333 | Robertson Rd | 7.49 |
+| south-option-local-road-0009 | Local Road | 80bb0df3-732c-40c3-9d67-7ec758a7cd4c | Northaven Dr | 8.79 |
+| south-option-local-road-0010 | Local Road | 34ad9174-8b94-44b2-8658-d612240f79a5 | Robinson Rd | 16.30 |
+| south-option-local-road-0011 | Local Road | e3e3825e-4f9f-4b0a-9694-8e0833bbc236 | Dacus Rd | 16.36 |
+| south-option-local-road-0012 | Local Road | 94e1fa41-0665-4bba-90f9-56c14877b3a2 | Dacus Rd | 16.46 |
+| south-option-local-road-0013 | Local Road | 65aad8b2-c306-49e3-baf4-29233be4e866 | Pirani St | 16.79 |
+| south-option-local-road-0014 | Local Road | 3ae3d5ac-cbc6-424d-a135-280e2666c8e2 | Mound City Rd | 16.86 |
+| south-option-local-road-0015 | Local Road | d4112d0d-8dfe-426e-b22f-4d638a8b3357 | Bill Grill Rd | 19.01 |
+| south-option-local-road-0016 | Local Road | bf31b32b-e3b7-4ed2-b614-01fe59c63fdc |  | 20.49 |
 | south-option-railroad-0001 | Railroad | daa8c189-3e50-40f8-b4ae-cf72033eb3b0 | BNSF Railway Company | 18.09 |
 | south-option-railroad-0002 | Railroad | 77d1cf5c-ea5d-4151-bda9-6996a37fe1bc | Union Pacific Railroad Company | 19.72 |
 | south-option-railroad-0003 | Railroad | 70461b0a-2ee2-4255-a1dd-b6a09dc70954 | Union Pacific Railroad Company | 20.14 |
@@ -261,20 +324,10 @@ No structures found.
 
 | Map ID | Type | ID | Name | Start milepost | End milepost | Length affected (ft) | Area affected (acres) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| south-option-wetland-0001 | Wetland | 22899856 | Riverine | 1.79 | 1.81 | 104.27 | 0.72 |
-| south-option-wetland-0002 | Wetland | 6941553 | Freshwater Forested/Shrub Wetland | 2.44 | 2.49 | 235.05 | 1.37 |
-| south-option-wetland-0003 | Wetland | 10998730 | Freshwater Forested/Shrub Wetland | 2.83 | 2.88 | 244.56 | 1.74 |
-| south-option-wetland-0004 | Wetland | 10998329 | Freshwater Forested/Shrub Wetland | 4.93 | 4.98 | 254.01 | 1.03 |
-| south-option-wetland-0005 | Wetland | 22925744 | Riverine | 6.99 | 6.99 | 20.85 | 0.17 |
-| south-option-wetland-0006 | Wetland | 16268988 | Freshwater Forested/Shrub Wetland | 13.65 | 13.86 | 1,127.93 | 7.76 |
-| south-option-wetland-0007 | Wetland | 16269000 | Lake | 14.38 | 14.45 | 387.96 | 2.53 |
-| south-option-wetland-0008 | Wetland | 16269023 | Freshwater Forested/Shrub Wetland | 16.08 | 16.27 | 983.70 | 3.10 |
-| south-option-wetland-0009 | Wetland | 14151363 | Riverine | 17.21 | 17.22 | 28.51 | 0.20 |
-| south-option-wetland-0010 | Wetland | 14187977 | Riverine | 18.47 | 18.48 | 20.95 | 0.14 |
 | south-option-waterbody-0001 | Waterbody | 205817 | Robertson Lake | 7.63 | 7.68 | 286.95 | 1.86 |
 | south-option-waterbody-0002 | Waterbody | 461759 |  | 12.58 | 14.04 | 7,716.93 | 52.67 |
-| south-option-waterbody-0003 | Waterbody | 462477 |  | 12.58 | 14.04 | 7,716.93 | 52.67 |
-| south-option-waterbody-0004 | Waterbody | 462464 |  | 12.58 | 14.04 | 7,716.93 | 52.67 |
+| south-option-waterbody-0003 | Waterbody | 462464 |  | 12.58 | 14.04 | 7,716.93 | 52.67 |
+| south-option-waterbody-0004 | Waterbody | 462477 |  | 12.58 | 14.04 | 7,716.93 | 52.67 |
 | south-option-waterbody-0005 | Waterbody | 206286 |  | 16.08 | 16.19 | 539.26 | 3.75 |
 | south-option-stream-0001 | Stream |  |  | 0.55 |  |  |  |
 | south-option-stream-0002 | Stream | 1277276 | Big Creek | 1.81 |  |  |  |
@@ -342,7 +395,47 @@ No structures found.
 
 | Map ID | ID | Type |
 | --- | --- | --- |
-| south-option-structures-0001 | 50156973 | Unclassified |
-| south-option-structures-0002 | 51632918 | Single Family Dwelling |
-| south-option-structures-0003 | 50158490 | Unclassified |
+| south-option-structures-0001 | 50158496 | Unclassified |
+| south-option-structures-0002 | 50156948 | Unclassified |
+| south-option-structures-0003 | 50158294 | Unclassified |
+| south-option-structures-0004 | 50158545 | Unclassified |
+| south-option-structures-0005 | 50158354 | Unclassified |
+| south-option-structures-0006 | 50158498 | Unclassified |
+| south-option-structures-0007 | 50389712 | Single Family Dwelling |
+| south-option-structures-0008 | 50156973 | Unclassified |
+| south-option-structures-0009 | 50158300 | Unclassified |
+| south-option-structures-0010 | 50158490 | Unclassified |
+| south-option-structures-0011 | 50158355 | Unclassified |
+| south-option-structures-0012 | 50158537 | Unclassified |
+| south-option-structures-0013 | 50157812 | Unclassified |
+| south-option-structures-0014 | 50158312 | Unclassified |
+| south-option-structures-0015 | 50157136 | Unclassified |
+| south-option-structures-0016 | 50157807 | Unclassified |
+| south-option-structures-0017 | 50158362 | Unclassified |
+| south-option-structures-0018 | 50158285 | Unclassified |
+| south-option-structures-0019 | 50158530 | Unclassified |
+| south-option-structures-0020 | 50157817 | Professional/Technical Services |
+| south-option-structures-0021 | 50158306 | Unclassified |
+| south-option-structures-0022 | 50158551 | Unclassified |
+| south-option-structures-0023 | 50398383 | Single Family Dwelling |
+| south-option-structures-0024 | 1195281 | Single Family Dwelling |
+| south-option-structures-0025 | 50389612 | Single Family Dwelling |
+| south-option-structures-0026 | 1211890 | Single Family Dwelling |
+| south-option-structures-0027 | 50401200 | Single Family Dwelling |
+| south-option-structures-0028 | 51632927 | Single Family Dwelling |
+| south-option-structures-0029 | 51632858 | Single Family Dwelling |
+| south-option-structures-0030 | 51632918 | Single Family Dwelling |
+| south-option-structures-0031 | 50401176 | Single Family Dwelling |
+| south-option-structures-0032 | 51626021 | Single Family Dwelling |
+| south-option-structures-0033 | 50399056 | Single Family Dwelling |
+| south-option-structures-0034 | 50393947 | Single Family Dwelling |
+| south-option-structures-0035 | 51632911 | Single Family Dwelling |
+| south-option-structures-0036 | 50389586 | Single Family Dwelling |
+| south-option-structures-0037 | 51572215 | Single Family Dwelling |
+| south-option-structures-0038 | 51853020 | Unclassified |
+| south-option-structures-0039 | 51632903 | Single Family Dwelling |
+| south-option-structures-0040 | 51599331 | Single Family Dwelling |
+| south-option-structures-0041 | 50389338 | Unclassified |
+| south-option-structures-0042 | 50382475 | Single Family Dwelling |
+| south-option-structures-0043 | 50390026 | Single Family Dwelling |
 

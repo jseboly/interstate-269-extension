@@ -137,7 +137,7 @@ def export_map_data(routes=None, output_path=None):
                     route_slug,
                     feature_type,
                     "Environment",
-                    lambda row: row.geometry.intersection(corridor_geometry),
+                    lambda row: row.geometry,
                     lambda row: _text(row.get("Name"), feature_type),
                     lambda row: feature_type,
                 )

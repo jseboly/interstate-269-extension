@@ -107,6 +107,10 @@
 		.map-panel-header strong { color: var(--forest); font: 600 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
 		.map-panel-header span { color: var(--muted); font-size: 11px; }
 		#route-map { min-height: 390px; height: min(58vh, 620px); background: #e6ece7; }
+		.environment-legend { padding: 9px 11px; background: rgba(255, 254, 250, .96); color: var(--ink); font: 11px/1.5 var(--sans); }
+		.environment-legend strong { display: block; margin-bottom: 4px; font-size: 10px; text-transform: uppercase; }
+		.environment-legend-item { display: flex; align-items: center; gap: 7px; }
+		.environment-legend-swatch { width: 13px; height: 10px; border: 2px solid; }
 		.map-message { margin: 0; padding: 13px 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 12px; }
 		.data-table tbody tr[data-feature-ids] { cursor: pointer; }
 		.data-table tbody tr[data-feature-ids]:hover td { background: #eaf1e9; }
@@ -361,6 +365,16 @@
 		let mapLayersById = new Map();
 		let selectedMapIds = [];
 		let layerControl = null;
+		let environmentLegend = null;
+
+		const environmentStyles = {
+			"Wetland": { color: "#2f855a", fillColor: "#68b684", weight: 1.2, fillOpacity: 0.38 },
+			"Waterbody": { color: "#2878a5", fillColor: "#6ab0d4", weight: 1.2, fillOpacity: 0.42 },
+			"Stream": { color: "#158b8b", fillColor: "#70c9bd", weight: 2.2, fillOpacity: 0.65 },
+			"Flood Zone": { color: "#7554a5", fillColor: "#a98ccc", weight: 1.2, fillOpacity: 0.3 },
+			"Protected Area": { color: "#a65c20", fillColor: "#dfa45f", weight: 1.2, fillOpacity: 0.3 }
+		};
+		const defaultEnvironmentStyle = { color: "#58656b", fillColor: "#9aa7ad", weight: 1.2, fillOpacity: 0.35 };
 
 		function featureStyle(feature, selected = false) {
 			const palette = {
@@ -368,12 +382,42 @@
 				Corridors: { color: "#d2a849", weight: 1, fillColor: "#d2a849", fillOpacity: 0.13 },
 				Parcels: { color: "#487c67", weight: 1, fillColor: "#78a68e", fillOpacity: 0.18 },
 				Crossings: { color: "#c85c43", weight: 2, fillColor: "#dc6e4e", fillOpacity: 0.85 },
-				Environment: { color: "#3f8290", weight: 1, fillColor: "#74b9bd", fillOpacity: 0.26 },
 				Structures: { color: "#aa4737", weight: 2, fillColor: "#d16b4b", fillOpacity: 0.85 }
 			};
-			const style = { ...(palette[feature.properties.group] || palette.Environment) };
+			const style = feature.properties.group === "Environment"
+				? { ...(environmentStyles[feature.properties.feature_type] || defaultEnvironmentStyle) }
+				: { ...(palette[feature.properties.group] || defaultEnvironmentStyle) };
 			if (selected) Object.assign(style, { color: "#172b27", weight: 4, fillColor: "#f2bd4b", fillOpacity: 0.9 });
 			return style;
+		}
+
+		function addEnvironmentLegend(features) {
+			const types = [...new Set(features.map((feature) => feature.properties.feature_type || "Other"))].sort();
+			if (!types.length) return;
+			environmentLegend = L.control({ position: "bottomright" });
+			environmentLegend.onAdd = () => {
+				const container = L.DomUtil.create("div", "leaflet-control environment-legend");
+				container.setAttribute("role", "group");
+				container.setAttribute("aria-label", "Environmental feature types");
+				const title = document.createElement("strong");
+				title.textContent = "Environmental feature type";
+				container.append(title);
+				for (const type of types) {
+					const style = environmentStyles[type] || defaultEnvironmentStyle;
+					const item = document.createElement("div");
+					item.className = "environment-legend-item";
+					const swatch = document.createElement("span");
+					swatch.className = "environment-legend-swatch";
+					swatch.style.borderColor = style.color;
+					swatch.style.backgroundColor = style.fillColor;
+					const label = document.createElement("span");
+					label.textContent = type;
+					item.append(swatch, label);
+					container.append(item);
+				}
+				return container;
+			};
+			environmentLegend.addTo(routeMap);
 		}
 
 		function revealTableRows(featureIds) {
@@ -430,6 +474,7 @@
 			} else {
 				for (const layer of Object.values(activeMapLayers)) routeMap.removeLayer(layer);
 				if (layerControl) routeMap.removeControl(layerControl);
+				if (environmentLegend) routeMap.removeControl(environmentLegend);
 			}
 			mapLayersById = new Map();
 			selectedMapIds = [];
@@ -445,6 +490,7 @@
 			activeMapLayers = {};
 			for (const [group, label] of definitions) {
 				const features = mapFeatureCollection.features.filter((feature) => feature.properties.route === routeName && feature.properties.group === group);
+				if (group === "Environment") addEnvironmentLegend(features);
 				const layer = L.geoJSON({ type: "FeatureCollection", features }, {
 					style: (feature) => featureStyle(feature),
 					pointToLayer: (feature, latlng) => L.circleMarker(latlng, { ...featureStyle(feature), radius: group === "Crossings" ? 6 : 5 }),
