@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="theme-color" content="#183c35">
+	<meta name="description" content="Route impact comparison for the proposed Interstate 269 extension.">
+	<title>I-269 Extension | Route Impact Report</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+	<style>
+		:root {
+			color-scheme: light;
+			--ink: #1d2c28;
+			--muted: #64716c;
+			--forest: #183c35;
+			--forest-deep: #102d28;
+			--leaf: #d3e2d6;
+			--paper: #f4f4ee;
+			--white: #fffefa;
+			--line: #dce1d8;
+			--coral: #c85c43;
+			--gold: #d9aa48;
+			--mono: "IBM Plex Mono", Consolas, monospace;
+			--sans: "DM Sans", "Segoe UI", sans-serif;
+			--display: "Manrope", "Segoe UI", sans-serif;
+		}
+
+		* { box-sizing: border-box; }
+		body {
+			margin: 0;
+			background:
+				linear-gradient(90deg, rgba(24, 60, 53, .025) 1px, transparent 1px) 0 0 / 48px 48px,
+				var(--paper);
+			color: var(--ink);
+			font: 15px/1.5 var(--sans);
+		}
+		button, input { font: inherit; }
+		.masthead {
+			position: relative;
+			overflow: hidden;
+			background: var(--forest);
+			color: #f7f5eb;
+		}
+		.masthead::after {
+			position: absolute;
+			right: -30px;
+			bottom: -132px;
+			width: 420px;
+			height: 260px;
+			border: 1px solid rgba(224, 233, 213, .22);
+			border-radius: 50%;
+			box-shadow: 0 0 0 22px rgba(224, 233, 213, .045), 0 0 0 52px rgba(224, 233, 213, .04), 0 0 0 86px rgba(224, 233, 213, .035);
+			content: "";
+			transform: rotate(-16deg);
+			pointer-events: none;
+		}
+		.masthead-inner, main, .footer-inner { width: min(1120px, calc(100% - 48px)); margin-inline: auto; }
+		.masthead-inner { position: relative; z-index: 1; padding: 28px 0 38px; }
+		.topline { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+		.brand { display: flex; align-items: center; gap: 11px; font-size: 13px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+		.brand-mark { display: grid; width: 34px; aspect-ratio: 1; place-items: center; border: 1px solid rgba(255,255,255,.4); border-radius: 50%; color: #e7bd60; font: 600 12px var(--mono); }
+		.report-tag { color: #cbd9ce; font: 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+		.hero { display: grid; grid-template-columns: minmax(0, 1fr) 225px; align-items: end; gap: 40px; margin-top: 54px; }
+		.eyebrow { margin: 0 0 12px; color: #d6b75f; font: 500 11px var(--mono); letter-spacing: .12em; text-transform: uppercase; }
+		h1 { max-width: 700px; margin: 0; font: 700 clamp(38px, 5vw, 64px)/1.02 var(--display); letter-spacing: 0; }
+		.hero-copy { max-width: 650px; margin: 17px 0 0; color: #d0ded4; font-size: 16px; }
+		.hero-aside { padding: 0 0 5px 18px; border-left: 1px solid rgba(255,255,255,.25); color: #cedbd2; font-size: 13px; }
+		.hero-aside strong { display: block; margin-bottom: 5px; color: #fffefa; font: 600 12px var(--mono); letter-spacing: .04em; }
+		main { padding: 35px 0 68px; }
+		.section-heading { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 16px; }
+		.section-heading h2 { margin: 0; font: 700 22px/1.2 var(--display); }
+		.section-heading p { max-width: 500px; margin: 0; color: var(--muted); font-size: 13px; }
+		.comparison { overflow: hidden; border: 1px solid var(--line); background: var(--white); }
+		.comparison-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--line); }
+		.comparison-top strong { font: 600 12px var(--mono); letter-spacing: .04em; text-transform: uppercase; }
+		.comparison-top span { color: var(--muted); font-size: 12px; }
+		.comparison-scroll { overflow-x: auto; }
+		table { width: 100%; border-collapse: collapse; text-align: left; }
+		th { color: #66736d; font: 500 10px var(--mono); letter-spacing: .07em; text-transform: uppercase; }
+		.comparison th, .comparison td { padding: 11px 18px; border-bottom: 1px solid #e8ebe4; }
+		.comparison th:not(:first-child), .comparison td:not(:first-child) { width: 21%; text-align: right; font-variant-numeric: tabular-nums; }
+		.comparison th:first-child { width: 58%; }
+		.comparison td:first-child { font-weight: 600; }
+		.comparison tr:last-child td { border-bottom: 0; }
+		.comparison td:not(:first-child) { font: 500 13px var(--mono); }
+		.comparison .route-head { color: var(--forest); }
+		.comparison .major td:first-child { color: var(--forest); }
+		.comparison .major td { font-weight: 700; }
+		.details-section { margin-top: 43px; }
+		.route-controls { display: flex; gap: 6px; padding: 4px; border: 1px solid var(--line); background: #e9ece5; }
+		.route-controls button { min-height: 38px; padding: 0 14px; border: 0; background: transparent; color: #52615b; cursor: pointer; font-size: 13px; font-weight: 700; }
+		.route-controls button[aria-pressed="true"] { background: var(--forest); color: white; }
+		.route-controls button:focus-visible, summary:focus-visible, input:focus-visible { outline: 3px solid #d5a840; outline-offset: 2px; }
+		.route-intro { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin: 21px 0 15px; }
+		.route-intro h3 { margin: 0; font: 700 20px var(--display); }
+		.route-intro p { margin: 0; color: var(--muted); font-size: 12px; }
+		.route-overview { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 13px; }
+		.overview-cell { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; padding: 14px 16px; border-left: 3px solid var(--gold); background: #e9ece5; }
+		.overview-cell span { color: #596760; font-size: 12px; }
+		.overview-cell strong { color: var(--forest); font: 600 18px var(--mono); }
+		.metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+		.metric { min-width: 0; border: 1px solid var(--line); background: var(--white); animation: appear .35s ease both; }
+		.metric:nth-child(2) { animation-delay: .04s; }
+		.metric:nth-child(3) { animation-delay: .08s; }
+		.metric:nth-child(4) { animation-delay: .12s; }
+		.metric:nth-child(5) { animation-delay: .16s; }
+		.metric-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 17px 18px 10px; }
+		.metric-heading h4 { margin: 0; font: 700 16px var(--display); }
+		.metric-count { color: var(--forest); font: 600 20px var(--mono); white-space: nowrap; }
+		.metric-subtitle { margin: 0; padding: 0 18px 14px; color: var(--muted); font-size: 12px; }
+		.breakdown { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 18px 16px; }
+		.breakdown-item { display: inline-flex; gap: 7px; align-items: baseline; padding: 5px 8px; background: #edf1eb; color: #46564f; font-size: 11px; }
+		.breakdown-item strong { color: var(--forest); font: 600 11px var(--mono); }
+		.metric details { border-top: 1px solid #e6e9e2; }
+		.metric summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 18px; color: var(--forest); cursor: pointer; font-size: 12px; font-weight: 700; list-style: none; }
+		.metric summary::-webkit-details-marker { display: none; }
+		.metric summary::after { content: "+"; color: var(--coral); font: 500 18px var(--mono); }
+		.metric details[open] summary::after { content: "−"; }
+		.detail-content { padding: 0 14px 14px; }
+		.table-tools { display: flex; justify-content: flex-end; padding: 0 0 9px; }
+		.table-tools input { width: min(260px, 100%); min-height: 34px; padding: 6px 9px; border: 1px solid var(--line); border-radius: 0; background: #fff; color: var(--ink); font-size: 12px; }
+		.table-wrap { max-height: 370px; overflow: auto; border: 1px solid #e4e8e1; }
+		.data-table { min-width: 600px; font-size: 11px; }
+		.data-table th { position: sticky; z-index: 1; top: 0; padding: 9px 10px; background: #e9eee7; }
+		.data-table td { padding: 8px 10px; border-top: 1px solid #eceee9; vertical-align: top; }
+		.data-table tr:nth-child(even) td { background: #fbfbf7; }
+		.data-table td.numeric { text-align: right; font: 11px var(--mono); white-space: nowrap; }
+		.empty-note, .load-error { padding: 16px; color: var(--muted); font-size: 13px; }
+		.load-error { border: 1px solid #d9a995; background: #fff7f2; color: #703d2f; }
+		.loading { padding: 25px 0; color: var(--muted); }
+		.footer { border-top: 1px solid var(--line); background: #e9ece5; }
+		.footer-inner { display: flex; justify-content: space-between; gap: 20px; padding: 18px 0; color: #64716c; font-size: 11px; }
+		.footer a { color: var(--forest); font-weight: 700; text-decoration-thickness: 1px; text-underline-offset: 3px; }
+		@keyframes appear { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+		@media (max-width: 720px) {
+			.masthead-inner, main, .footer-inner { width: min(100% - 32px, 1120px); }
+			.hero { grid-template-columns: 1fr; gap: 22px; margin-top: 43px; }
+			.hero-aside { max-width: 390px; }
+			.section-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
+			.comparison th, .comparison td { padding: 10px 12px; }
+			.comparison th:first-child { min-width: 190px; }
+			.comparison th:not(:first-child), .comparison td:not(:first-child) { min-width: 115px; }
+			.metrics { grid-template-columns: 1fr; }
+			.route-intro { align-items: flex-start; flex-direction: column; gap: 4px; }
+			.footer-inner { flex-direction: column; gap: 4px; }
+		}
+		@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
+	</style>
+</head>
+<body>
+	<header class="masthead">
+		<div class="masthead-inner">
+			<div class="topline">
+				<div class="brand"><span class="brand-mark">269</span><span>Route planning study</span></div>
+				<span class="report-tag">Impact comparison / 01</span>
+			</div>
+			<div class="hero">
+				<div>
+					<p class="eyebrow">Interstate 269 extension</p>
+					<h1>Route impact<br>report</h1>
+					<p class="hero-copy">A side-by-side look at land, permits, environmental features, and structures affected by the two proposed corridors.</p>
+				</div>
+				<div class="hero-aside"><strong>STUDY AREA</strong>Millington, Tennessee<br>to the Mississippi River corridor</div>
+			</div>
+		</div>
+	</header>
+
+	<main>
+		<section aria-labelledby="comparison-title">
+			<div class="section-heading">
+				<h2 id="comparison-title">At a glance</h2>
+				<p>Each total reflects the reported analysis results. Choose a route below to inspect the affected features.</p>
+			</div>
+			<div id="comparison" class="comparison"><div class="loading">Loading route comparison…</div></div>
+		</section>
+
+		<section class="details-section" aria-labelledby="details-title">
+			<div class="section-heading">
+				<h2 id="details-title">Impact details</h2>
+				<p>Summaries stay visible. Open a section to review its feature list; use the search field to narrow long tables.</p>
+			</div>
+			<div id="route-controls" class="route-controls" role="group" aria-label="Select a route"></div>
+			<div id="route-content" aria-live="polite"><div class="loading">Preparing route details…</div></div>
+		</section>
+	</main>
+
+	<footer class="footer"><div class="footer-inner"><span>Interstate 269 extension · route impact analysis</span><a href="Results.md">View source results</a></div></footer>
+
+	<script>
+		const stripMarkdown = (value) => value.replace(/^\*\*(.*)\*\*$/, "$1").trim();
+		const splitTableRow = (line) => line.trim().replace(/^\|/, "").replace(/\|$/, "").split("|").map((cell) => stripMarkdown(cell.trim()));
+		const escapeHTML = (value) => String(value ?? "").replace(/[&<>"']/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[character]);
+		const isDivider = (line) => /^\|?\s*:?-{3,}/.test(line.trim());
+
+		function parseReport(markdown) {
+			const report = { summary: null, routes: {} };
+			let section = "";
+			let route = "";
+			let tableLines = [];
+
+			const saveTable = () => {
+				if (tableLines.length < 2) { tableLines = []; return; }
+				const rows = tableLines.filter((line) => !isDivider(line)).map(splitTableRow);
+				if (section === "Executive Summary") report.summary = rows;
+				else if (route && section) report.routes[route][section] = rows;
+				tableLines = [];
+			};
+
+			for (const line of markdown.split(/\r?\n/)) {
+				const heading = line.match(/^(#{2,3})\s+(.+)$/);
+				if (heading) {
+					saveTable();
+					const level = heading[1].length;
+					const title = heading[2].trim();
+					if (level === 2) {
+						section = title;
+						const routeHeading = title.match(/^(.+?) Details$/);
+						route = routeHeading ? routeHeading[1] : "";
+						if (route) report.routes[route] = {};
+					} else {
+						section = title;
+					}
+					continue;
+				}
+				if (line.trim().startsWith("|")) tableLines.push(line);
+				else if (tableLines.length) saveTable();
+			}
+			saveTable();
+			return report;
+		}
+
+		function rowsForGroup(summaryRows, groupName) {
+			const start = summaryRows.findIndex((row) => row[0] === groupName);
+			if (start < 0) return [];
+			const groupHeadings = new Set(["Landowners by type", "Parcels by type", "Permits by type", "Environmental features by type", "Structure count"]);
+			const rows = [];
+			for (let index = start + 1; index < summaryRows.length; index += 1) {
+				if (groupHeadings.has(summaryRows[index][0])) break;
+				if (summaryRows[index][0]) rows.push(summaryRows[index]);
+			}
+			return rows;
+		}
+
+		function rowForLabel(rows, label) {
+			return rows.find((row) => row[0] === label) || [];
+		}
+
+		function routeSummary(summaryRows, routeIndex) {
+			const valueAt = (row, index = routeIndex) => row[index] || "0";
+			const length = rowForLabel(summaryRows, "Total length (mi)");
+			const area = rowForLabel(summaryRows, "Total area (acres)");
+			const groups = {
+				owners: rowsForGroup(summaryRows, "Landowners by type"),
+				parcels: rowsForGroup(summaryRows, "Parcels by type"),
+				permits: rowsForGroup(summaryRows, "Permits by type"),
+				environment: rowsForGroup(summaryRows, "Environmental features by type")
+			};
+			return {
+				length: valueAt(length),
+				area: valueAt(area),
+				ownersTotal: valueAt(rowForLabel(summaryRows, "Landowners by type")),
+				parcelsTotal: valueAt(rowForLabel(summaryRows, "Parcels by type")),
+				permitsTotal: valueAt(rowForLabel(summaryRows, "Permits by type")),
+				structuresTotal: valueAt(rowForLabel(summaryRows, "Structure count")),
+				groups: Object.fromEntries(Object.entries(groups).map(([key, rows]) => [key, rows.map((row) => [row[0], valueAt(row)])]))
+			};
+		}
+
+		function tableBlock(rows, className = "data-table") {
+			if (!rows || rows.length < 2) return "";
+			const [headers, ...data] = rows;
+			const head = headers.map((cell) => `<th scope="col">${escapeHTML(cell)}</th>`).join("");
+			const body = data.map((row) => `<tr>${headers.map((_, index) => {
+				const value = row[index] || "";
+				const numeric = /^-?[\d,]+(?:\.\d+)?$/.test(value);
+				return `<td${numeric ? ' class="numeric"' : ""}>${escapeHTML(value)}</td>`;
+			}).join("")}</tr>`).join("");
+			return `<div class="table-wrap"><table class="${className}"><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+		}
+
+		function parcelOwnerRows(parcelRows) {
+			if (!parcelRows || parcelRows.length < 2) return [];
+			const counts = new Map();
+			for (const row of parcelRows.slice(1)) {
+				const owner = row[1] || "Owner not listed";
+				const type = row[2] || "Unknown";
+				const key = `${owner}\u0000${type}`;
+				counts.set(key, (counts.get(key) || 0) + 1);
+			}
+			return [["Owner", "Owner type", "Parcels affected"], ...Array.from(counts, ([key, count]) => {
+				const [owner, type] = key.split("\u0000");
+				return [owner, type, String(count)];
+			}).sort((left, right) => left[0].localeCompare(right[0]))];
+		}
+
+		function breakdownHTML(rows) {
+			return `<div class="breakdown">${rows.map(([label, count]) => `<span class="breakdown-item">${escapeHTML(label)} <strong>${escapeHTML(count)}</strong></span>`).join("")}</div>`;
+		}
+
+		function metricCard({ title, count, subtitle, breakdown = [], detailsLabel, rows, emptyMessage }) {
+			const detailCount = rows && rows.length > 1 ? rows.length - 1 : 0;
+			const contents = rows && rows.length > 1
+				? `<div class="table-tools"><input type="search" aria-label="Search ${escapeHTML(title)}" placeholder="Search ${escapeHTML(title.toLowerCase())}…"></div>${tableBlock(rows)}`
+				: `<p class="empty-note">${escapeHTML(emptyMessage || "No feature records were reported.")}</p>`;
+			return `<article class="metric">
+				<div class="metric-heading"><h4>${escapeHTML(title)}</h4><span class="metric-count">${escapeHTML(count)}</span></div>
+				<p class="metric-subtitle">${escapeHTML(subtitle)}</p>
+				${breakdown.length ? breakdownHTML(breakdown) : ""}
+				<details><summary>${escapeHTML(detailsLabel || `View ${detailCount} records`)}</summary><div class="detail-content">${contents}</div></details>
+			</article>`;
+		}
+
+		function renderComparison(summaryRows, routeNames) {
+			const matrix = [
+				["Total length (mi)", "Total length (mi)", true],
+				["Corridor area (acres)", "Total area (acres)", true],
+				["Landowners", "Landowners by type", false],
+				["Parcels", "Parcels by type", false],
+				["Permit crossings", "Permits by type", false],
+				["Environmental features", "Environmental features by type", false],
+				["Structures", "Structure count", false]
+			];
+			const getTotal = (label, index) => {
+				if (label === "Environmental features by type") return rowsForGroup(summaryRows, label).reduce((sum, item) => sum + (Number(item[index]) || 0), 0).toLocaleString("en-US");
+				const row = rowForLabel(summaryRows, label);
+				if (row.length) return row[index] || "0";
+				return "0";
+			};
+			const body = matrix.map(([label, source, major]) => {
+				const firstValue = getTotal(source, 1);
+				const secondValue = getTotal(source, 2);
+				return `<tr${major ? ' class="major"' : ""}><td>${escapeHTML(label)}</td><td>${escapeHTML(firstValue)}</td><td>${escapeHTML(secondValue)}</td></tr>`;
+			}).join("");
+			document.querySelector("#comparison").innerHTML = `<div class="comparison-top"><strong>Route comparison</strong><span>Reported corridor totals and affected features</span></div><div class="comparison-scroll"><table><thead><tr><th scope="col">Metric</th>${routeNames.map((name) => `<th scope="col" class="route-head">${escapeHTML(name)}</th>`).join("")}</tr></thead><tbody>${body}</tbody></table></div>`;
+		}
+
+		function renderRoute(routeName, routeData, totals, summaryIndex) {
+			const parcelRows = routeData["Parcel Line List"] || [];
+			const permitRows = routeData["Permit Crossing List"] || [];
+			const environmentRows = routeData["Environmental constraints"] || [];
+			const structureRows = routeData.Structures || [];
+			const ownersRows = parcelOwnerRows(parcelRows);
+			const metricData = [
+				metricCard({ title: "Landowners", count: totals.ownersTotal, subtitle: "Unique owners by reported owner type.", breakdown: totals.groups.owners, detailsLabel: `View ${Math.max(ownersRows.length - 1, 0)} owners`, rows: ownersRows, emptyMessage: "No parcel owner records were reported." }),
+				metricCard({ title: "Parcels", count: totals.parcelsTotal, subtitle: "Parcels intersected by the route corridor.", breakdown: totals.groups.parcels, detailsLabel: `View ${Math.max(parcelRows.length - 1, 0)} parcel records`, rows: parcelRows, emptyMessage: "No parcel records were reported." }),
+				metricCard({ title: "Permits", count: totals.permitsTotal, subtitle: "Reported road, highway, and railroad crossings.", breakdown: totals.groups.permits, detailsLabel: permitRows.length > 1 ? `View ${permitRows.length - 1} crossings` : "View permit results", rows: permitRows, emptyMessage: permitRows.length ? "No permit crossings found." : "No permit crossings found." }),
+				metricCard({ title: "Environmental features", count: totals.groups.environment.reduce((sum, [, count]) => sum + (Number(count) || 0), 0).toLocaleString("en-US"), subtitle: "Reported features intersecting the route or corridor.", breakdown: totals.groups.environment, detailsLabel: `View ${Math.max(environmentRows.length - 1, 0)} affected features`, rows: environmentRows, emptyMessage: "No environmental features were reported." }),
+				metricCard({ title: "Structures", count: totals.structuresTotal, subtitle: "Structures reported within the corridor.", detailsLabel: structureRows.length > 1 ? `View ${structureRows.length - 1} structures` : "View structure results", rows: structureRows, emptyMessage: "No structures found." })
+			].join("");
+
+			const plural = (value, singular, many) => `${value} ${Number(value) === 1 ? singular : many}`;
+			document.querySelector("#route-content").innerHTML = `<div class="route-intro"><h3>${escapeHTML(routeName)}</h3><p>${plural(totals.ownersTotal, "landowner", "landowners")} · ${plural(totals.parcelsTotal, "parcel", "parcels")} · ${escapeHTML(totals.length)} mi</p></div>
+				<div class="route-overview"><div class="overview-cell"><span>Total route length</span><strong>${escapeHTML(totals.length)} mi</strong></div><div class="overview-cell"><span>Total corridor area</span><strong>${escapeHTML(totals.area)} ac</strong></div></div>
+				<div class="metrics">${metricData}</div>`;
+			document.querySelectorAll(".metric input[type=search]").forEach((input) => {
+				input.addEventListener("input", () => {
+					const query = input.value.toLocaleLowerCase();
+					input.closest(".detail-content").querySelectorAll("tbody tr").forEach((row) => {
+						row.hidden = !row.textContent.toLocaleLowerCase().includes(query);
+					});
+				});
+			});
+		}
+
+		async function init() {
+			try {
+				const response = await fetch(new URL("Results.md", window.location.href));
+				if (!response.ok) throw new Error(`Could not load Results.md (${response.status}).`);
+				const report = parseReport(await response.text());
+				if (!report.summary || !Object.keys(report.routes).length) throw new Error("The results report does not contain the expected summary and route sections.");
+				const summaryRows = report.summary;
+				const routeNames = Object.keys(report.routes);
+				renderComparison(summaryRows, routeNames);
+				const controls = document.querySelector("#route-controls");
+				controls.innerHTML = routeNames.map((name, index) => `<button type="button" aria-pressed="${index === 0}" data-route="${escapeHTML(name)}">${escapeHTML(name)}</button>`).join("");
+				const selectRoute = (name) => {
+					const routeIndex = routeNames.indexOf(name) + 1;
+					renderRoute(name, report.routes[name], routeSummary(summaryRows, routeIndex), routeIndex);
+					controls.querySelectorAll("button").forEach((button) => button.setAttribute("aria-pressed", String(button.dataset.route === name)));
+				};
+				controls.addEventListener("click", (event) => {
+					const button = event.target.closest("button[data-route]");
+					if (button) selectRoute(button.dataset.route);
+				});
+				selectRoute(routeNames[0]);
+			} catch (error) {
+				const message = error instanceof Error ? error.message : "Unable to read the results report.";
+				document.querySelector("#comparison").innerHTML = `<p class="load-error">${escapeHTML(message)} Publish <code>Results.md</code> beside this page on GitHub Pages and reload.</p>`;
+				document.querySelector("#route-content").innerHTML = "";
+				document.querySelector("#route-controls").hidden = true;
+			}
+		}
+
+		init();
+	</script>
+</body>
+</html>
